@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="uz" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RED VAULT — VIP Raqamli Resurslar & AI Portali</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #070709;
+      color: #f3f4f6;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(220, 38, 38, 0.14), transparent 55%),
+        linear-gradient(to right, rgba(220, 38, 38, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(220, 38, 38, 0.04) 1px, transparent 1px);
+      background-size: 100% 100%, 40px 40px, 40px 40px;
+    }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .crimson-glow { box-shadow: 0 0 30px rgba(220, 38, 38, 0.25); }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0d0d11; }
+    ::-webkit-scrollbar-thumb { background: #7f1d1d; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-red-600 selection:text-white">
+
+  <!-- 1. KIRISH OYNASI (GATEKEEPER) -->
+  <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-[#0d0d11]/95 border border-red-900/50 rounded-2xl p-8 crimson-glow backdrop-blur-md">
+      <div class="flex flex-col items-center text-center mb-7">
+        <div class="w-24 h-24 rounded-full bg-black border-2 border-red-600/80 p-1 mb-4 shadow-[0_0_25px_rgba(220,38,38,0.5)] overflow-hidden flex items-center justify-center">
+          <img id="loginLogoImg" src="https://yt3.googleusercontent.com/ytc/AIdro_nRqzN4-JA3rOOrrh2A3uKKR7es1ggyuUwYEMGf0cGkirqW=s900-c-k-c0x00ffffff-no-rj" alt="RED VAULT" class="w-full h-full object-cover rounded-full" />
+        </div>
+        <h1 class="text-3xl font-extrabold tracking-tight">
+          <span class="text-white">RED</span> <span class="text-red-600">VAULT</span>
+        </h1>
+        <p class="text-xs text-neutral-400 mt-1.5 max-w-xs">
+          Raqamli Resurslar, AI Generatorlar va Dizayn Aktivlari Portali
+        </p>
+      </div>
+
+      <div id="loginError" class="hidden mb-4 p-3 rounded-xl bg-red-950/80 border border-red-600/70 text-red-200 text-xs text-center font-medium"></div>
+
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-neutral-300 mb-1.5">ID</label>
+          <input type="text" id="loginIdInput" required placeholder="ID raqamingizni kiriting"
+            class="w-full bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-4 py-3 text-sm text-white outline-none transition" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-neutral-300 mb-1.5">Parol</label>
+          <input type="password" id="loginPassInput" required placeholder="••••••••"
+            class="w-full bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-4 py-3 text-sm text-white outline-none transition" />
+        </div>
+        <button type="submit"
+          class="w-full py-3 rounded-xl bg-red-600 hover:bg-red-700 active:scale-[0.99] font-bold text-sm text-white transition shadow-lg shadow-red-600/25 flex items-center justify-center gap-2">
+          <span>Kirish</span>
+          <span>&rarr;</span>
+        </button>
+      </form>
+
+      <div class="mt-6 pt-5 border-t border-neutral-800/80">
+        <a id="buyAccessLink" href="https://t.me/admin" target="_blank"
+          class="w-full py-2.5 px-4 rounded-xl bg-[#141419] hover:bg-neutral-900 border border-neutral-800 hover:border-red-800/60 text-xs font-semibold text-neutral-200 flex items-center justify-center gap-2 transition">
+          <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+          <span>Kirish huquqini olish (Obuna)</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MUDDAT TUGAGAN FOYDALANUVCHI UCHUN OGOHLANTIRISH EKRANI -->
+  <div id="expiredScreen" class="hidden min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-lg bg-[#0d0d11] border-2 border-red-600 rounded-2xl p-8 text-center crimson-glow">
+      <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-950 border border-red-600 flex items-center justify-center text-red-500 text-3xl font-bold">
+        !
+      </div>
+      <h2 class="text-2xl font-extrabold text-red-500 uppercase tracking-wide mb-2">
+        Diqqat! Obuna muddatingiz tugadi
+      </h2>
+      <p id="expiredUserText" class="text-sm text-neutral-300 leading-relaxed mb-6">
+        Sizning to'lov muddatingiz yakunlandi. Portal resurslaridan qayta foydalanish uchun Admin bilan bog'lanib to'lovni yangilang. Aks holda akkauntingiz tizimdan butunlay o'chiriladi.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a id="expiredTelegramBtn" href="https://t.me/admin" target="_blank"
+          class="px-6 py-3 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-sm text-white transition">
+          Admin bilan bog'lanish (To'lov qilish)
+        </a>
+        <button onclick="logoutUser()"
+          class="px-6 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 font-semibold text-sm text-neutral-300 transition">
+          Chiqish
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ADMIN BOSHQARUV PANELI -->
+  <div id="adminDashboard" class="hidden min-h-screen flex flex-col">
+    <header class="bg-[#0d0d11]/90 border-b border-red-900/40 px-6 py-4 sticky top-0 z-30 backdrop-blur-md">
+      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <img id="adminLogoImg" src="https://yt3.googleusercontent.com/ytc/AIdro_nRqzN4-JA3rOOrrh2A3uKKR7es1ggyuUwYEMGf0cGkirqW=s900-c-k-c0x00ffffff-no-rj" alt="Logo" class="w-10 h-10 rounded-full border border-red-600 object-cover bg-black" />
+          <div>
+            <span class="font-extrabold text-lg tracking-tight"><span class="text-white">RED</span> <span class="text-red-600">VAULT</span></span>
+            <span class="ml-2 text-xs font-mono px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-800/60">ADMIN PANEL</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="switchAdminTab('members')" id="tabBtnMembers" class="px-4 py-2 rounded-lg text-xs font-semibold bg-red-600 text-white transition">A'zolar & Muddatlar</button>
+          <button onclick="switchAdminTab('resources')" id="tabBtnResources" class="px-4 py-2 rounded-lg text-xs font-semibold bg-neutral-900 text-neutral-400 hover:text-white transition">Mahsulot Qo'shish</button>
+          <button onclick="switchAdminTab('settings')" id="tabBtnSettings" class="px-4 py-2 rounded-lg text-xs font-semibold bg-neutral-900 text-neutral-400 hover:text-white transition">Sozlamalar</button>
+          <button onclick="logoutUser()" class="ml-2 px-4 py-2 rounded-lg text-xs font-semibold bg-neutral-900 hover:bg-red-950 text-red-400 border border-red-900/50 transition">Chiqish</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl w-full mx-auto p-6 flex-1">
+      <!-- TAB 1: A'ZOLAR VA TO'LOV MUDDATLARI -->
+      <div id="adminTabMembers" class="space-y-6">
+        <div class="bg-[#0d0d11] border border-red-900/40 rounded-2xl p-6">
+          <h2 class="text-lg font-bold text-white mb-1">Yangi A'zo Qo'shish (ID & Muddat Belglash)</h2>
+          <p class="text-xs text-neutral-400 mb-4">To'lov qilgan mijozga ID, parol va amal qilish muddatini bering. Band ID kiritilsa tizim xatolik beradi.</p>
+          
+          <div id="adminAddError" class="hidden mb-4 p-3 rounded-xl bg-red-950 border border-red-600 text-red-200 text-xs font-semibold"></div>
+          <div id="adminAddSuccess" class="hidden mb-4 p-3 rounded-xl bg-emerald-950 border border-emerald-600 text-emerald-200 text-xs font-semibold"></div>
+
+          <form id="addMemberForm" class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <input type="text" id="newMemberId" required placeholder="Yangi ID (masalan: vip101)"
+              class="bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
+            <input type="text" id="newMemberPass" required placeholder="Parol (masalan: 7788)"
+              class="bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
+            <select id="newMemberDuration"
+              class="bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-4 py-2.5 text-sm text-white outline-none">
+              <option value="30">1 Oy (30 kun)</option>
+              <option value="60">2 Oy (60 kun)</option>
+              <option value="90">3 Oy (90 kun)</option>
+              <option value="180">6 Oy (180 kun)</option>
+              <option value="-1">Sinov: Muddati tugagan (0 kun)</option>
+            </select>
+            <button type="submit"
+              class="bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-xl px-4 py-2.5 transition">
+              + A'zoni Qo'shish
+            </button>
+          </form>
+        </div>
+
+        <div class="bg-[#0d0d11] border border-neutral-800 rounded-2xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-lg font-bold text-white">Faol A'zolar Ro'yxati</h3>
+              <p class="text-xs text-neutral-400">Muddati tugagan foydalanuvchilarga ogohlantirish chiqadi, to'lamasa o'chirib yuborishingiz mumkin.</p>
+            </div>
+            <span id="memberCountBadge" class="px-3 py-1 rounded-full bg-red-950/70 border border-red-800 text-red-400 text-xs font-mono font-bold">0 ta a'zo</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-neutral-800 text-[11px] font-mono uppercase text-neutral-400">
+                  <th class="py-3 px-3">ID</th>
+                  <th class="py-3 px-3">Parol</th>
+                  <th class="py-3 px-3">Qo'shilgan Sana</th>
+                  <th class="py-3 px-3">Tugash Sanasi & Holat</th>
+                  <th class="py-3 px-3 text-right">Boshqaruv</th>
+                </tr>
+              </thead>
+              <tbody id="membersTableBody" class="divide-y divide-neutral-800/60 text-sm"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: MAHSULOT QO'SHISH -->
+      <div id="adminTabResources" class="hidden space-y-6">
+        <div class="bg-[#0d0d11] border border-red-900/40 rounded-2xl p-6">
+          <h2 class="text-lg font-bold text-white mb-4">Katalogga Yangi Raqamli Mahsulot Qo'shish</h2>
+          <form id="addResourceForm" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <input type="text" id="resTitle" required placeholder="Mahsulot nomi" class="bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
+              <select id="resCategory" class="bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none">
+                <option value="AI Promptlar">AI Promptlar</option>
+                <option value="Shablonlar & Dizayn">Shablonlar & Dizayn</option>
+                <option value="Telegram Stiker-paklar">Telegram Stiker-paklar</option>
+                <option value="Procreate Brushes">Procreate Brushes</option>
+              </select>
+              <input type="text" id="resBadge" required placeholder="Yorliq (masalan: VIP PACK)" class="bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
+            </div>
+            <input type="text" id="resDesc" required placeholder="Qisqacha tavsif..." class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
+            <textarea id="resContent" rows="4" required placeholder="Ichki matn, prompt kodi yoki yuklab olish havolasi..." class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm font-mono text-white outline-none"></textarea>
+            <button type="submit" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-sm text-white transition">Mahsulotni Saqlash</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 3: SOZLAMALAR -->
+      <div id="adminTabSettings" class="hidden">
+        <div class="max-w-xl bg-[#0d0d11] border border-neutral-800 rounded-2xl p-6 space-y-4">
+          <h2 class="text-lg font-bold text-white">Portal Sozlamalari</h2>
+          <div>
+            <label class="block text-xs text-neutral-400 mb-1">To'lov uchun Admin Telegram Havolasi</label>
+            <input type="text" id="settingTelegram" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs text-neutral-400 mb-1">Logotip Rasm Havolasi (URL)</label>
+            <input type="text" id="settingLogoUrl" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
+          </div>
+          <button onclick="savePortalSettings()" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-sm text-white transition">Sozlamalarni Saqlash</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 4. A'ZO PORTALI (ICHKI KATALOG VA AI GENERATORLAR) -->
+  <div id="memberPortal" class="hidden min-h-screen flex flex-col">
+    <header class="bg-[#0d0d11]/90 border-b border-red-900/40 px-6 py-4 sticky top-0 z-30 backdrop-blur-md">
+      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <img id="memberLogoImg" src="https://yt3.googleusercontent.com/ytc/AIdro_nRqzN4-JA3rOOrrh2A3uKKR7es1ggyuUwYEMGf0cGkirqW=s900-c-k-c0x00ffffff-no-rj" alt="Logo" class="w-10 h-10 rounded-full border border-red-600 object-cover bg-black" />
+          <div>
+            <span class="font-extrabold text-lg tracking-tight"><span class="text-white">RED</span> <span class="text-red-600">VAULT</span></span>
+            <span class="ml-2 text-xs text-neutral-400 hidden sm:inline">// VIP ARXIV</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="memberDaysBadge" class="px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 text-xs font-mono">Obuna faol</span>
+          <button onclick="logoutUser()" class="px-4 py-2 rounded-xl bg-neutral-900 hover:bg-red-950 border border-neutral-800 text-xs font-semibold text-neutral-300 hover:text-red-300 transition">Chiqish</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl w-full mx-auto p-6 space-y-8 flex-1">
+      <!-- AI GENERATOR STUDIO -->
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- AI Kod Yaratuvchi -->
+        <div class="bg-[#0d0d11] border border-red-900/40 rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-bold text-white">AI Dastur & Kod Yaratuvchi</h3>
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-800/50">TEKIN VIP</span>
+            </div>
+            <select id="codePresetSelect" class="w-full bg-black border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-white mb-3 outline-none">
+              <option value="bot">Telegram Bot Boshlang'ich Kodi (Python Aiogram)</option>
+              <option value="login">Zamonaviy Qora-Qizil Kirish Oynasi (HTML/Tailwind)</option>
+              <option value="calc">Kredit va Foyda Kalkulyatori (JavaScript)</option>
+            </select>
+            <textarea id="customCodePrompt" rows="2" placeholder="Yoki o'zingiz xohlagan kod vazifasini yozing (masalan: 'Oddiy timer sayt kodi')..." class="w-full bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-3.5 py-2 text-xs text-white mb-3 outline-none"></textarea>
+          </div>
+          <div>
+            <button onclick="generateAiCode()" class="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-xs text-white transition mb-3">Kod Yaratish</button>
+            <pre id="codeOutputBox" class="bg-black border border-neutral-800 rounded-xl p-3 text-[11px] font-mono text-emerald-400 overflow-x-auto max-h-44"></pre>
+          </div>
+        </div>
+
+        <!-- AI Vektor Logotip Yasovchi -->
+        <div class="bg-[#0d0d11] border border-red-900/40 rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-base font-bold text-white">AI Vektor Logotip Yasovchi (SVG)</h3>
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-800/50">TEKIN VIP</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-3">
+              <input type="text" id="logoBrandInput" value="RED VAULT" placeholder="Brend nomi" class="bg-black border border-neutral-800 rounded-xl px-3.5 py-2 text-xs text-white outline-none" />
+              <select id="logoStyleSelect" class="bg-black border border-neutral-800 rounded-xl px-3.5 py-2 text-xs text-white outline-none">
+                <option value="shield">Kiber Qalqon (Shield)</option>
+                <option value="crown">VIP Qirollik Toji</option>
+                <option value="bolt">Tezkor Chaqmoq</option>
+              </select>
+            </div>
+            <button onclick="generateAiLogo()" class="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-xs text-white transition mb-3">Logotip Yaratish</button>
+          </div>
+          <div class="bg-black border border-neutral-800 rounded-xl p-4 flex items-center justify-between">
+            <div id="logoPreviewContainer" class="flex items-center gap-3"></div>
+            <button onclick="downloadGeneratedSvg()" class="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-xs text-white transition">SVG Yuklash</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- KATEGORIYALAR VA KATALOG -->
+      <section class="space-y-4">
+        <div class="flex flex-wrap items-center gap-2" id="categoryFilterBar">
+          <button onclick="filterMemberCategory('Barchasi')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-red-600 text-white">Barchasi</button>
+          <button onclick="filterMemberCategory('AI Promptlar')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800">AI Promptlar</button>
+          <button onclick="filterMemberCategory('Shablonlar & Dizayn')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800">Shablonlar & Dizayn</button>
+          <button onclick="filterMemberCategory('Telegram Stiker-paklar')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800">Telegram Stiker-paklar</button>
+          <button onclick="filterMemberCategory('Procreate Brushes')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800">Procreate Brushes</button>
+        </div>
+
+        <div id="resourcesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- RESURS KO'RISH MODALI -->
+  <div id="resourceModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-2xl bg-[#0d0d11] border border-red-800/60 rounded-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 id="modalTitle" class="text-lg font-bold text-white"></h3>
+        <button onclick="closeResourceModal()" class="text-neutral-400 hover:text-white text-xl font-bold">&times;</button>
+      </div>
+      <p id="modalDesc" class="text-xs text-neutral-400"></p>
+      <pre id="modalContent" class="bg-black border border-neutral-800 rounded-xl p-4 text-xs font-mono text-neutral-200 overflow-x-auto max-h-72 whitespace-pre-wrap"></pre>
+      <div class="flex justify-end gap-3">
+        <button onclick="copyModalContent()" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-xs font-bold text-white">Nusxa Olish</button>
+        <button onclick="closeResourceModal()" class="px-4 py-2 rounded-xl bg-neutral-900 text-xs font-semibold text-neutral-300">Yopish</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'red_vault_clean_v1';
+    const DEFAULT_LOGO = 'https://yt3.googleusercontent.com/ytc/AIdro_nRqzN4-JA3rOOrrh2A3uKKR7es1ggyuUwYEMGf0cGkirqW=s900-c-k-c0x00ffffff-no-rj';
+
+    function getFutureDate(days) {
+      const d = new Date();
+      d.setDate(d.getDate() + days);
+      return d.toISOString();
+    }
+
+    function formatDateUz(isoStr) {
+      const d = new Date(isoStr);
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      return `${day}.${month}.${year}`;
+    }
+
+    function getDaysLeft(expiresAtIso) {
+      const diff = new Date(expiresAtIso).getTime() - Date.now();
+      return Math.ceil(diff / (1000 * 60 * 60 * 24));
+    }
+
+    const defaultData = {
+      settings: {
+        telegramUrl: 'https://t.me/admin',
+        logoUrl: DEFAULT_LOGO
+      },
+      users: [
+        { id: 'user1', pass: '1234', createdAt: new Date().toISOString(), expiresAt: getFutureDate(30) },
+        { id: 'user2', pass: '1234', createdAt: new Date().toISOString(), expiresAt: getFutureDate(-2) }
+      ],
+      resources: [
+        {
+          id: 'r1',
+          title: 'Midjourney & DALL-E Dark UI/Logo Promptlar (50+)',
+          category: 'AI Promptlar',
+          badge: 'PROMPT PACK',
+          desc: 'Minimalist qora-qizil brend logotiplari va kiber-interfeys dizaynlari uchun tayyor promptlar.',
+          content: '1. Minimalist crimson red emblem on pitch black background, vector style, sharp edges --v 6.0\n2. Dark mode SaaS dashboard UI, obsidian glassmorphism, subtle red neon accents --ar 16:9'
+        },
+        {
+          id: 'r2',
+          title: 'VIP Kirish Oynasi HTML/Tailwind Shablon',
+          category: 'Shablonlar & Dizayn',
+          badge: 'HTML/CSS',
+          desc: 'Yopiq klublar va raqamli portallar uchun tayyor kirish formasi kodi.',
+          content: '<div class="bg-black border border-red-800 p-6 rounded-2xl text-white">\n  <h2 class="text-xl font-bold text-red-500">VIP KIRISH</h2>\n  <input type="text" placeholder="ID" class="w-full mt-3 p-2 bg-neutral-900 rounded" />\n</div>'
+        },
+        {
+          id: 'r3',
+          title: 'Noir Dark Telegram Stiker-Pak (40 ta HD)',
+          category: 'Telegram Stiker-paklar',
+          badge: 'STIKER PAK',
+          desc: 'Qora va qizil uslubdagi eksklyuziv Telegram stikerlar to\'plami.',
+          content: 'Telegram Stiker Havolasi: https://t.me/addstickers/RedVaultNoirPack\nArxiv paroli: REDVAULT2026'
+        },
+        {
+          id: 'r4',
+          title: 'Procreate Ink & Neon Sketch Brushes (.brushset)',
+          category: 'Procreate Brushes',
+          badge: 'IPAD PRO',
+          desc: 'iPad Procreate dasturida komiks, manhwa va neon chizmalar yaratish uchun 35 ta maxsus mo\'yqalam.',
+          content: 'Paket tarkibi: Crimson Blood Ink, Noir Charcoal Sketch, Neon Rim Light\nMoslik: iPadOS / Procreate 5X+'
+        }
+      ]
+    };
+
+    let appData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultData;
+    let currentCategory = 'Barchasi';
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      applyLogosAndLinks();
+    }
+
+    function applyLogosAndLinks() {
+      const logo = appData.settings.logoUrl || DEFAULT_LOGO;
+      const tg = appData.settings.telegramUrl || 'https://t.me/admin';
+      ['loginLogoImg', 'adminLogoImg', 'memberLogoImg'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.src = logo;
+      });
+      ['buyAccessLink', 'expiredTelegramBtn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.href = tg;
+      });
+    }
+
+    // KIRISH MANTIQI
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const idVal = document.getElementById('loginIdInput').value.trim();
+      const passVal = document.getElementById('loginPassInput').value.trim();
+      const errBox = document.getElementById('loginError');
+
+      if (idVal === 'admin' && passVal === 'admin123') {
+        errBox.classList.add('hidden');
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('adminDashboard').classList.remove('hidden');
+        renderMembersTable();
+        document.getElementById('settingTelegram').value = appData.settings.telegramUrl;
+        document.getElementById('settingLogoUrl').value = appData.settings.logoUrl;
+        return;
+      }
+
+      const foundUser = appData.users.find(u => u.id === idVal && u.pass === passVal);
+      if (!foundUser) {
+        errBox.textContent = "Xatolik: ID yoki parol noto'g'ri kiritildi!";
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      errBox.classList.add('hidden');
+      document.getElementById('loginScreen').classList.add('hidden');
+
+      const daysLeft = getDaysLeft(foundUser.expiresAt);
+      if (daysLeft <= 0) {
+        document.getElementById('expiredUserText').textContent = `Hurmatli "${foundUser.id}", sizning to'lov muddatingiz (${formatDateUz(foundUser.expiresAt)}) tugadi. Davom etish uchun Admin bilan bog'lanib to'lov qiling, aks holda ID o'chiriladi.`;
+        document.getElementById('expiredScreen').classList.remove('hidden');
+      } else {
+        document.getElementById('memberDaysBadge').textContent = `ID: ${foundUser.id} | ${daysLeft} kun qoldi`;
+        document.getElementById('memberPortal').classList.remove('hidden');
+        renderResourcesGrid();
+        generateAiCode();
+        generateAiLogo();
+      }
+    });
+
+    function logoutUser() {
+      document.getElementById('adminDashboard').classList.add('hidden');
+      document.getElementById('memberPortal').classList.add('hidden');
+      document.getElementById('expiredScreen').classList.add('hidden');
+      document.getElementById('loginScreen').classList.remove('hidden');
+      document.getElementById('loginPassInput').value = '';
+    }
+
+    // ADMIN FUNKSIYALARI
+    function switchAdminTab(tab) {
+      ['Members', 'Resources', 'Settings'].forEach(name => {
+        document.getElementById('adminTab' + name).classList.add('hidden');
+        const btn = document.getElementById('tabBtn' + name);
+        btn.className = 'px-4 py-2 rounded-lg text-xs font-semibold bg-neutral-900 text-neutral-400 hover:text-white transition';
+      });
+      const activeName = tab.charAt(0).toUpperCase() + tab.slice(1);
+      document.getElementById('adminTab' + activeName).classList.remove('hidden');
+      document.getElementById('tabBtn' + activeName).className = 'px-4 py-2 rounded-lg text-xs font-semibold bg-red-600 text-white transition';
+    }
+
+    document.getElementById('addMemberForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const newId = document.getElementById('newMemberId').value.trim();
+      const newPass = document.getElementById('newMemberPass').value.trim();
+      const days = parseInt(document.getElementById('newMemberDuration').value, 10);
+      const errEl = document.getElementById('adminAddError');
+      const okEl = document.getElementById('adminAddSuccess');
+
+      errEl.classList.add('hidden');
+      okEl.classList.add('hidden');
+
+      if (newId.toLowerCase() === 'admin' || appData.users.some(u => u.id.toLowerCase() === newId.toLowerCase())) {
+        errEl.textContent = `Xatolik: "${newId}" ID raqami bazada allaqachon band! Boshqa ID kiriting.`;
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      appData.users.push({
+        id: newId,
+        pass: newPass,
+        createdAt: new Date().toISOString(),
+        expiresAt: getFutureDate(days)
+      });
+      saveData();
+      renderMembersTable();
+      document.getElementById('newMemberId').value = '';
+      document.getElementById('newMemberPass').value = '';
+      okEl.textContent = `Muvaffaqiyatli qo'shildi: ${newId}`;
+      okEl.classList.remove('hidden');
+    });
+
+    function extendMember(id, extraDays) {
+      const user = appData.users.find(u => u.id === id);
+      if (!user) return;
+      const baseTime = Math.max(Date.now(), new Date(user.expiresAt).getTime());
+      const nextDate = new Date(baseTime + extraDays * 24 * 60 * 60 * 1000);
+      user.expiresAt = nextDate.toISOString();
+      saveData();
+      renderMembersTable();
+    }
+
+    function deleteMember(id) {
+      appData.users = appData.users.filter(u => u.id !== id);
+      saveData();
+      renderMembersTable();
+    }
+
+    function renderMembersTable() {
+      const tbody = document.getElementById('membersTableBody');
+      document.getElementById('memberCountBadge').textContent = `${appData.users.length} ta a'zo`;
+      tbody.innerHTML = appData.users.map(u => {
+        const daysLeft = getDaysLeft(u.expiresAt);
+        const statusBadge = daysLeft > 0
+          ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-mono">${formatDateUz(u.expiresAt)} (${daysLeft} kun)</span>`
+          : `<span class="px-2.5 py-0.5 rounded-full bg-red-950 text-red-400 border border-red-700 text-xs font-mono font-bold">Muddati tugagan!</span>`;
+        return `
+          <tr class="hover:bg-neutral-900/40">
+            <td class="py-3.5 px-3 font-mono font-bold text-white">${u.id}</td>
+            <td class="py-3.5 px-3 font-mono text-emerald-400">${u.pass}</td>
+            <td class="py-3.5 px-3 text-neutral-400 text-xs">${formatDateUz(u.createdAt)}</td>
+            <td class="py-3.5 px-3">${statusBadge}</td>
+            <td class="py-3.5 px-3 text-right space-x-2">
+              <button onclick="extendMember('${u.id}', 30)" class="px-3 py-1 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-emerald-300 text-xs font-semibold transition">+1 Oy</button>
+              <button onclick="deleteMember('${u.id}')" class="px-3 py-1 rounded-lg bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-semibold transition">O'chirish</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('addResourceForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      appData.resources.unshift({
+        id: 'r' + Date.now(),
+        title: document.getElementById('resTitle').value.trim(),
+        category: document.getElementById('resCategory').value,
+        badge: document.getElementById('resBadge').value.trim().toUpperCase(),
+        desc: document.getElementById('resDesc').value.trim(),
+        content: document.getElementById('resContent').value.trim()
+      });
+      saveData();
+      e.target.reset();
+      alert("Yangi mahsulot katalogga qo'shildi!");
+    });
+
+    function savePortalSettings() {
+      appData.settings.telegramUrl = document.getElementById('settingTelegram').value.trim() || 'https://t.me/admin';
+      appData.settings.logoUrl = document.getElementById('settingLogoUrl').value.trim() || DEFAULT_LOGO;
+      saveData();
+      alert("Sozlamalar saqlandi!");
+    }
+
+    // A'ZO KATALOGI VA AI GENERATORLAR
+    function filterMemberCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        if (btn.textContent === cat) {
+          btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-red-600 text-white';
+        } else {
+          btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800';
+        }
+      });
+      renderResourcesGrid();
+    }
+
+    function renderResourcesGrid() {
+      const grid = document.getElementById('resourcesGrid');
+      const items = currentCategory === 'Barchasi'
+        ? appData.resources
+        : appData.resources.filter(r => r.category === currentCategory);
+
+      grid.innerHTML = items.map(item => `
+        <div class="bg-[#0d0d11] border border-neutral-800 hover:border-red-800/70 rounded-2xl p-5 flex flex-col justify-between transition">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-mono px-2.5 py-0.5 rounded bg-red-950/80 text-red-400 border border-red-900/60">${item.badge}</span>
+              <span class="text-[11px] text-emerald-400 font-bold">TEKIN</span>
+            </div>
+            <h4 class="text-base font-bold text-white mb-1.5">${item.title}</h4>
+            <p class="text-xs text-neutral-400 leading-relaxed mb-4">${item.desc}</p>
+          </div>
+          <button onclick="openResourceModal('${item.id}')" class="w-full py-2.5 rounded-xl bg-neutral-900 hover:bg-red-600 text-xs font-bold text-white transition">
+            Ochish & Yuklab Olish
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function openResourceModal(id) {
+      const item = appData.resources.find(r => r.id === id);
+      if (!item) return;
+      document.getElementById('modalTitle').textContent = item.title;
+      document.getElementById('modalDesc').textContent = item.desc;
+      document.getElementById('modalContent').textContent = item.content;
+      document.getElementById('resourceModal').classList.remove('hidden');
+    }
+
+    function closeResourceModal() {
+      document.getElementById('resourceModal').classList.add('hidden');
+    }
+
+    function copyModalContent() {
+      const txt = document.getElementById('modalContent').textContent;
+      navigator.clipboard.writeText(txt);
+      alert("Nusxa olindi!");
+    }
+
+    function generateAiCode() {
+      const custom = document.getElementById('customCodePrompt').value.trim();
+      const preset = document.getElementById('codePresetSelect').value;
+      const box = document.getElementById('codeOutputBox');
+
+      if (custom) {
+        box.textContent = `// So'rov: ${custom}\nfunction startApp() {\n  console.log("${custom} ishga tushdi!");\n  return { status: "OK", vip: true };\n}\nstartApp();`;
+        return;
+      }
+
+      const snippets = {
+        bot: `from aiogram import Bot, Dispatcher, types\nimport asyncio\n\nbot = Bot(token="BOT_TOKEN")\ndp = Dispatcher()\n\n@dp.message()\nasync def echo(msg: types.Message):\n    await msg.answer("RED VAULT VIP Bot faol!")\n\nasyncio.run(dp.start_polling(bot))`,
+        login: `<div class="bg-black border border-red-600 p-6 rounded-2xl text-white">\n  <h2 class="text-red-500 font-bold">VIP LOGIN</h2>\n  <input placeholder="ID" class="bg-neutral-900 p-2 rounded w-full mt-2"/>\n</div>`,
+        calc: `function hisobla(summa, foiz) {\n  const foyda = summa * (foiz / 100);\n  return summa + foyda;\n}\nconsole.log("Jami:", hisobla(1000000, 15));`
+      };
+      box.textContent = snippets[preset];
+    }
+
+    function generateAiLogo() {
+      const brand = document.getElementById('logoBrandInput').value.trim() || 'RED VAULT';
+      const style = document.getElementById('logoStyleSelect').value;
+      const shapes = {
+        shield: `<path d="M24 4L6 12v12c0 11 7.7 21.3 18 24 10.3-2.7 18-13 18-24V12L24 4z" fill="#dc2626"/>`,
+        crown: `<path d="M6 34h36l-3-18-9 7-6-13-6 13-9-7-3 18z" fill="#dc2626"/>`,
+        bolt: `<path d="M27 4L10 26h13l-2 18 17-22H25l2-18z" fill="#dc2626"/>`
+      };
+      document.getElementById('logoPreviewContainer').innerHTML = `
+        <svg id="generatedSvgEl" width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="12" fill="#141419" stroke="#7f1d1d" stroke-width="2"/>
+          ${shapes[style]}
+        </svg>
+        <span class="font-extrabold text-sm tracking-wider text-white">${brand}</span>
+      `;
+    }
+
+    function downloadGeneratedSvg() {
+      const svgEl = document.getElementById('generatedSvgEl');
+      if (!svgEl) return;
+      const blob = new Blob([svgEl.outerHTML], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'red-vault-logo.svg';
+      a.click();
+    }
+
+    applyLogosAndLinks();
+  </script>
+</body>
+</html>
