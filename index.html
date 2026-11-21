@@ -26,9 +26,17 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-red-600 selection:text-white">
 
-  <!-- 1. KIRISH OYNASI (GATEKEEPER) -->
-  <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+  <!-- 1. KIRISH OYNASI + TASHQI VITRIN (PREVIEW SHOWCASE) -->
+  <div id="loginScreen" class="min-h-screen flex flex-col items-center justify-center p-4 py-10 space-y-10">
     <div class="w-full max-w-md bg-[#0d0d11]/95 border border-red-900/50 rounded-2xl p-8 crimson-glow backdrop-blur-md">
+      <div class="flex justify-end mb-4">
+        <div class="inline-flex rounded-lg bg-black border border-neutral-800 p-0.5 text-[11px] font-mono">
+          <button type="button" onclick="setLanguage('uz')" class="lang-btn px-2.5 py-1 rounded-md transition" data-lang="uz">UZ</button>
+          <button type="button" onclick="setLanguage('ru')" class="lang-btn px-2.5 py-1 rounded-md transition" data-lang="ru">RU</button>
+          <button type="button" onclick="setLanguage('en')" class="lang-btn px-2.5 py-1 rounded-md transition" data-lang="en">EN</button>
+        </div>
+      </div>
+
       <div class="flex flex-col items-center text-center mb-7">
         <div class="w-24 h-24 rounded-full bg-black border-2 border-red-600/80 p-1 mb-4 shadow-[0_0_25px_rgba(220,38,38,0.5)] overflow-hidden flex items-center justify-center">
           <img id="loginLogoImg" src="https://yt3.googleusercontent.com/ytc/AIdro_nRqzN4-JA3rOOrrh2A3uKKR7es1ggyuUwYEMGf0cGkirqW=s900-c-k-c0x00ffffff-no-rj" alt="RED VAULT" class="w-full h-full object-cover rounded-full" />
@@ -36,7 +44,7 @@
         <h1 class="text-3xl font-extrabold tracking-tight">
           <span class="text-white">RED</span> <span class="text-red-600">VAULT</span>
         </h1>
-        <p class="text-xs text-neutral-400 mt-1.5 max-w-xs">
+        <p data-i18n="loginSubtitle" class="text-xs text-neutral-400 mt-1.5 max-w-xs">
           Raqamli Resurslar, AI Generatorlar va Dizayn Aktivlari Portali
         </p>
       </div>
@@ -45,50 +53,110 @@
 
       <form id="loginForm" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-neutral-300 mb-1.5">ID</label>
-          <input type="text" id="loginIdInput" required placeholder="ID raqamingizni kiriting"
+          <label data-i18n="idLabel" class="block text-xs font-semibold text-neutral-300 mb-1.5">ID</label>
+          <input type="text" id="loginIdInput" required data-i18n-ph="idPlaceholder" placeholder="ID raqamingizni kiriting"
             class="w-full bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-4 py-3 text-sm text-white outline-none transition" />
         </div>
         <div>
-          <label class="block text-xs font-semibold text-neutral-300 mb-1.5">Parol</label>
+          <label data-i18n="passLabel" class="block text-xs font-semibold text-neutral-300 mb-1.5">Parol</label>
           <input type="password" id="loginPassInput" required placeholder="••••••••"
             class="w-full bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-4 py-3 text-sm text-white outline-none transition" />
         </div>
         <button type="submit"
           class="w-full py-3 rounded-xl bg-red-600 hover:bg-red-700 active:scale-[0.99] font-bold text-sm text-white transition shadow-lg shadow-red-600/25 flex items-center justify-center gap-2">
-          <span>Kirish</span>
+          <span data-i18n="loginBtn">Kirish</span>
           <span>&rarr;</span>
         </button>
       </form>
 
-      <div class="mt-6 pt-5 border-t border-neutral-800/80">
-        <a id="buyAccessLink" href="https://t.me/admin" target="_blank"
-          class="w-full py-2.5 px-4 rounded-xl bg-[#141419] hover:bg-neutral-900 border border-neutral-800 hover:border-red-800/60 text-xs font-semibold text-neutral-200 flex items-center justify-center gap-2 transition">
+      <div class="mt-6 pt-5 border-t border-neutral-800/80 space-y-2.5">
+        <button type="button" onclick="openPaymentModal()"
+          class="w-full py-2.5 px-4 rounded-xl bg-[#141419] hover:bg-neutral-900 border border-red-800/60 hover:border-red-600 text-xs font-semibold text-neutral-200 flex items-center justify-center gap-2 transition">
           <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
-          <span>Kirish huquqini olish (Obuna)</span>
-        </a>
+          <span data-i18n="buyAccessBtn">Kirish huquqini olish (Tariflar & To'lov)</span>
+        </button>
+        <p data-i18n="singleDeviceHint" class="text-[11px] text-center text-neutral-500">
+          Himoya: 1 ta ID faqat 1 ta qurilmada ishlaydi
+        </p>
       </div>
+    </div>
+
+    <!-- Tashqi Vitrin -->
+    <div class="w-full max-w-5xl space-y-4">
+      <div class="flex items-center justify-between px-1">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-red-600"></span>
+          <h2 data-i18n="vitrinTitle" class="text-sm font-bold uppercase tracking-wider text-neutral-300">Ichkarida nimalar bor? (VIP Arxiv Vitrinasi)</h2>
+        </div>
+        <span data-i18n="vitrinLockedBadge" class="text-xs font-mono text-red-400">🔒 Faqat a'zolar uchun ochiq</span>
+      </div>
+      <div id="publicVitrinGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
     </div>
   </div>
 
-  <!-- 2. MUDDAT TUGAGAN FOYDALANUVCHI UCHUN OGOHLANTIRISH EKRANI -->
+  <!-- TO'LOV VA TARIFLAR MODALI (GOOGLE SHEETS GA YUBORADI) -->
+  <div id="paymentModal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="w-full max-w-lg bg-[#0d0d11] border border-red-800/70 rounded-2xl p-6 space-y-5 crimson-glow">
+      <div class="flex items-center justify-between">
+        <h3 data-i18n="payModalTitle" class="text-lg font-bold text-white">VIP Obuna Tariflari & To'lov</h3>
+        <button onclick="closePaymentModal()" class="text-neutral-400 hover:text-white text-2xl font-bold">&times;</button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div onclick="selectTariff('1 Oy')" id="tariffCard1" class="cursor-pointer p-4 rounded-xl bg-black border-2 border-red-600 transition">
+          <div class="text-xs font-mono text-red-400">1 OY (30 KUN)</div>
+          <div id="displayPrice1m" class="text-lg font-extrabold text-white mt-1">50 000 so'm</div>
+          <div data-i18n="tariffDesc1" class="text-[11px] text-neutral-400 mt-1">Barcha resurslar + AI</div>
+        </div>
+        <div onclick="selectTariff('3 Oy')" id="tariffCard3" class="cursor-pointer p-4 rounded-xl bg-black border border-neutral-800 hover:border-red-700 transition">
+          <div class="text-xs font-mono text-emerald-400">3 OY (90 KUN)</div>
+          <div id="displayPrice3m" class="text-lg font-extrabold text-white mt-1">120 000 so'm</div>
+          <div data-i18n="tariffDesc3" class="text-[11px] text-neutral-400 mt-1">Tejamkor VIP paket</div>
+        </div>
+      </div>
+
+      <div class="bg-black border border-neutral-800 rounded-xl p-4 flex items-center justify-between gap-3">
+        <div>
+          <div data-i18n="cardLabel" class="text-[11px] text-neutral-400">To'lov uchun karta raqami:</div>
+          <div id="displayCardNumber" class="font-mono font-bold text-sm text-white mt-0.5">8600 0000 0000 0000</div>
+          <div id="displayCardHolder" class="text-[11px] text-neutral-500">RED VAULT ADMIN</div>
+        </div>
+        <button type="button" onclick="copyCardNumber()" data-i18n="copyBtn" class="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-red-600 text-xs font-semibold text-white transition">Nusxa Olish</button>
+      </div>
+
+      <form id="paymentRequestForm" class="space-y-3">
+        <input type="text" id="reqUserTg" required data-i18n-ph="reqTgPh" placeholder="Telegram username yoki telefoningiz (@username)"
+          class="w-full bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-4 py-2.5 text-xs text-white outline-none" />
+        <input type="text" id="reqNote" required data-i18n-ph="reqNotePh" placeholder="To'lov cheki raqami yoki vaqti (masalan: 14:25 da o'tkazdim)"
+          class="w-full bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-4 py-2.5 text-xs text-white outline-none" />
+        <div class="flex flex-col sm:flex-row gap-2.5 pt-1">
+          <button type="submit" id="submitPayReqBtn" data-i18n="sendReqBtn" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-xs text-white transition">
+            So'rov Yuborish (Google & Admin)
+          </button>
+          <a id="buyAccessLink" href="https://t.me/admin" target="_blank" data-i18n="openTgDirect"
+            class="py-2.5 px-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-xs font-semibold text-neutral-200 text-center transition">
+            Telegramga o'tish
+          </a>
+        </div>
+      </form>
+      <div id="reqSuccessMsg" class="hidden p-3 rounded-xl bg-emerald-950 border border-emerald-600 text-emerald-200 text-xs text-center font-semibold"></div>
+    </div>
+  </div>
+
+  <!-- 2. MUDDAT TUGAGAN FOYDALANUVCHI EKRANI -->
   <div id="expiredScreen" class="hidden min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-lg bg-[#0d0d11] border-2 border-red-600 rounded-2xl p-8 text-center crimson-glow">
-      <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-950 border border-red-600 flex items-center justify-center text-red-500 text-3xl font-bold">
-        !
-      </div>
-      <h2 class="text-2xl font-extrabold text-red-500 uppercase tracking-wide mb-2">
+      <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-red-950 border border-red-600 flex items-center justify-center text-red-500 text-3xl font-bold">!</div>
+      <h2 data-i18n="expiredTitle" class="text-2xl font-extrabold text-red-500 uppercase tracking-wide mb-2">
         Diqqat! Obuna muddatingiz tugadi
       </h2>
-      <p id="expiredUserText" class="text-sm text-neutral-300 leading-relaxed mb-6">
-        Sizning to'lov muddatingiz yakunlandi. Portal resurslaridan qayta foydalanish uchun Admin bilan bog'lanib to'lovni yangilang. Aks holda akkauntingiz tizimdan butunlay o'chiriladi.
-      </p>
+      <p id="expiredUserText" class="text-sm text-neutral-300 leading-relaxed mb-6"></p>
       <div class="flex flex-col sm:flex-row gap-3 justify-center">
-        <a id="expiredTelegramBtn" href="https://t.me/admin" target="_blank"
+        <button onclick="openPaymentModal()" data-i18n="contactAdminPay"
           class="px-6 py-3 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-sm text-white transition">
-          Admin bilan bog'lanish (To'lov qilish)
-        </a>
-        <button onclick="logoutUser()"
+          To'lovni Yangilash
+        </button>
+        <button onclick="logoutUser()" data-i18n="logoutBtn"
           class="px-6 py-3 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 font-semibold text-sm text-neutral-300 transition">
           Chiqish
         </button>
@@ -107,39 +175,49 @@
             <span class="ml-2 text-xs font-mono px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-800/60">ADMIN PANEL</span>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <button onclick="switchAdminTab('members')" id="tabBtnMembers" class="px-4 py-2 rounded-lg text-xs font-semibold bg-red-600 text-white transition">A'zolar & Muddatlar</button>
-          <button onclick="switchAdminTab('resources')" id="tabBtnResources" class="px-4 py-2 rounded-lg text-xs font-semibold bg-neutral-900 text-neutral-400 hover:text-white transition">Mahsulot Qo'shish</button>
-          <button onclick="switchAdminTab('settings')" id="tabBtnSettings" class="px-4 py-2 rounded-lg text-xs font-semibold bg-neutral-900 text-neutral-400 hover:text-white transition">Sozlamalar</button>
-          <button onclick="logoutUser()" class="ml-2 px-4 py-2 rounded-lg text-xs font-semibold bg-neutral-900 hover:bg-red-950 text-red-400 border border-red-900/50 transition">Chiqish</button>
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="inline-flex rounded-lg bg-black border border-neutral-800 p-0.5 text-[11px] font-mono mr-2">
+            <button type="button" onclick="setLanguage('uz')" class="lang-btn px-2 py-1 rounded-md transition" data-lang="uz">UZ</button>
+            <button type="button" onclick="setLanguage('ru')" class="lang-btn px-2 py-1 rounded-md transition" data-lang="ru">RU</button>
+            <button type="button" onclick="setLanguage('en')" class="lang-btn px-2 py-1 rounded-md transition" data-lang="en">EN</button>
+          </div>
+          <button onclick="switchAdminTab('members')" id="tabBtnMembers" data-i18n="tabMembers" class="px-4 py-2 rounded-lg text-xs font-semibold bg-red-600 text-white transition">A'zolar & Muddatlar</button>
+          <button onclick="switchAdminTab('resources')" id="tabBtnResources" data-i18n="tabAddProduct" class="px-4 py-2 rounded-lg text-xs font-semibold bg-neutral-900 text-neutral-400 hover:text-white transition">Mahsulotlar Boshqaruvi</button>
+          <button onclick="switchAdminTab('settings')" id="tabBtnSettings" data-i18n="tabSettings" class="px-4 py-2 rounded-lg text-xs font-semibold bg-neutral-900 text-neutral-400 hover:text-white transition">Google & Tarif Sozlamalari</button>
+          <button onclick="logoutUser()" data-i18n="logoutBtn" class="ml-1 px-4 py-2 rounded-lg text-xs font-semibold bg-neutral-900 hover:bg-red-950 text-red-400 border border-red-900/50 transition">Chiqish</button>
         </div>
       </div>
     </header>
 
     <main class="max-w-7xl w-full mx-auto p-6 flex-1">
-      <!-- TAB 1: A'ZOLAR VA TO'LOV MUDDATLARI -->
+      <!-- TAB 1: A'ZOLAR, TO'LOV ARIZALARI VA QURILMA NAZORATI -->
       <div id="adminTabMembers" class="space-y-6">
+        <div id="paymentRequestsSection" class="hidden bg-[#0d0d11] border border-amber-700/60 rounded-2xl p-6">
+          <h3 class="text-base font-bold text-amber-400 mb-3">Yangi To'lov So'rovlari (Cheklar)</h3>
+          <div id="paymentRequestsList" class="space-y-2"></div>
+        </div>
+
         <div class="bg-[#0d0d11] border border-red-900/40 rounded-2xl p-6">
-          <h2 class="text-lg font-bold text-white mb-1">Yangi A'zo Qo'shish (ID & Muddat Belglash)</h2>
-          <p class="text-xs text-neutral-400 mb-4">To'lov qilgan mijozga ID, parol va amal qilish muddatini bering. Band ID kiritilsa tizim xatolik beradi.</p>
+          <h2 data-i18n="addMemberTitle" class="text-lg font-bold text-white mb-1">Yangi A'zo Qo'shish (ID & Muddat Belgilash)</h2>
+          <p data-i18n="addMemberDesc" class="text-xs text-neutral-400 mb-4">To'lov qilgan mijozga ID, parol va amal qilish muddatini bering. Band ID kiritilsa tizim xatolik beradi.</p>
           
           <div id="adminAddError" class="hidden mb-4 p-3 rounded-xl bg-red-950 border border-red-600 text-red-200 text-xs font-semibold"></div>
           <div id="adminAddSuccess" class="hidden mb-4 p-3 rounded-xl bg-emerald-950 border border-emerald-600 text-emerald-200 text-xs font-semibold"></div>
 
           <form id="addMemberForm" class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-            <input type="text" id="newMemberId" required placeholder="Yangi ID (masalan: vip101)"
+            <input type="text" id="newMemberId" required placeholder="ID (vip101)"
               class="bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
-            <input type="text" id="newMemberPass" required placeholder="Parol (masalan: 7788)"
+            <input type="text" id="newMemberPass" required placeholder="Parol (7788)"
               class="bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
             <select id="newMemberDuration"
               class="bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-4 py-2.5 text-sm text-white outline-none">
-              <option value="30">1 Oy (30 kun)</option>
-              <option value="60">2 Oy (60 kun)</option>
-              <option value="90">3 Oy (90 kun)</option>
-              <option value="180">6 Oy (180 kun)</option>
-              <option value="-1">Sinov: Muddati tugagan (0 kun)</option>
+              <option value="30">1 Oy / Мес / Mo (30)</option>
+              <option value="60">2 Oy / Мес / Mo (60)</option>
+              <option value="90">3 Oy / Мес / Mo (90)</option>
+              <option value="180">6 Oy / Мес / Mo (180)</option>
+              <option value="-1">Expired Test (0)</option>
             </select>
-            <button type="submit"
+            <button type="submit" data-i18n="addMemberBtn"
               class="bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-xl px-4 py-2.5 transition">
               + A'zoni Qo'shish
             </button>
@@ -149,10 +227,10 @@
         <div class="bg-[#0d0d11] border border-neutral-800 rounded-2xl p-6">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <h3 class="text-lg font-bold text-white">Faol A'zolar Ro'yxati</h3>
-              <p class="text-xs text-neutral-400">Muddati tugagan foydalanuvchilarga ogohlantirish chiqadi, to'lamasa o'chirib yuborishingiz mumkin.</p>
+              <h3 data-i18n="activeMembersTitle" class="text-lg font-bold text-white">Faol A'zolar Ro'yxati</h3>
+              <p data-i18n="activeMembersSub" class="text-xs text-neutral-400">Har bir a'zo faqat 1 ta qurilmadan kira oladi. Qurilma blokini "Reset" tugmasi bilan yangilash mumkin.</p>
             </div>
-            <span id="memberCountBadge" class="px-3 py-1 rounded-full bg-red-950/70 border border-red-800 text-red-400 text-xs font-mono font-bold">0 ta a'zo</span>
+            <span id="memberCountBadge" class="px-3 py-1 rounded-full bg-red-950/70 border border-red-800 text-red-400 text-xs font-mono font-bold">0</span>
           </div>
 
           <div class="overflow-x-auto">
@@ -160,10 +238,10 @@
               <thead>
                 <tr class="border-b border-neutral-800 text-[11px] font-mono uppercase text-neutral-400">
                   <th class="py-3 px-3">ID</th>
-                  <th class="py-3 px-3">Parol</th>
-                  <th class="py-3 px-3">Qo'shilgan Sana</th>
-                  <th class="py-3 px-3">Tugash Sanasi & Holat</th>
-                  <th class="py-3 px-3 text-right">Boshqaruv</th>
+                  <th data-i18n="thPass" class="py-3 px-3">Parol</th>
+                  <th data-i18n="thDevice" class="py-3 px-3">Qurilma Himoyasi</th>
+                  <th data-i18n="thExpires" class="py-3 px-3">Tugash Sanasi & Holat</th>
+                  <th data-i18n="thActions" class="py-3 px-3 text-right">Boshqaruv</th>
                 </tr>
               </thead>
               <tbody id="membersTableBody" class="divide-y divide-neutral-800/60 text-sm"></tbody>
@@ -172,47 +250,115 @@
         </div>
       </div>
 
-      <!-- TAB 2: MAHSULOT QO'SHISH -->
+      <!-- TAB 2: MAHSULOT QO'SHISH, TAHRIRLASH VA O'CHIRISH -->
       <div id="adminTabResources" class="hidden space-y-6">
         <div class="bg-[#0d0d11] border border-red-900/40 rounded-2xl p-6">
-          <h2 class="text-lg font-bold text-white mb-4">Katalogga Yangi Raqamli Mahsulot Qo'shish</h2>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div>
+              <h2 id="resourceFormHeading" data-i18n="addProductTitle" class="text-lg font-bold text-white">Katalogga Yangi Mahsulot / Prompt Qo'shish</h2>
+              <p data-i18n="addProductDesc" class="text-xs text-neutral-400">Kiritilgan matn avtomatik tarzda O'zbek, Rus va Ingliz tillariga o'girilib saqlanadi.</p>
+            </div>
+            <div class="flex gap-2">
+              <button type="button" id="cancelEditResBtn" onclick="cancelEditResource()" class="hidden px-3 py-2 rounded-xl bg-neutral-800 text-xs text-neutral-300">Bekor qilish</button>
+              <button type="button" onclick="autoTranslateResourceFields()" id="translatePreviewBtn"
+                class="px-4 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-red-800/60 text-xs font-semibold text-red-400 transition">
+                UZ / RU / EN Tarjimani Tekshirish
+              </button>
+            </div>
+          </div>
+
           <form id="addResourceForm" class="space-y-4">
+            <input type="hidden" id="editingResourceId" value="" />
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <input type="text" id="resTitle" required placeholder="Mahsulot nomi" class="bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
+              <input type="text" id="resTitle" required placeholder="Mahsulot yoki Prompt nomi" class="bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
               <select id="resCategory" class="bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none">
                 <option value="AI Promptlar">AI Promptlar</option>
                 <option value="Shablonlar & Dizayn">Shablonlar & Dizayn</option>
                 <option value="Telegram Stiker-paklar">Telegram Stiker-paklar</option>
                 <option value="Procreate Brushes">Procreate Brushes</option>
               </select>
-              <input type="text" id="resBadge" required placeholder="Yorliq (masalan: VIP PACK)" class="bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
+              <input type="text" id="resBadge" required placeholder="Yorliq (VIP PACK)" class="bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
             </div>
             <input type="text" id="resDesc" required placeholder="Qisqacha tavsif..." class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
-            <textarea id="resContent" rows="4" required placeholder="Ichki matn, prompt kodi yoki yuklab olish havolasi..." class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm font-mono text-white outline-none"></textarea>
-            <button type="submit" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-sm text-white transition">Mahsulotni Saqlash</button>
+            <textarea id="resContent" rows="4" required placeholder="Asosiy prompt matni, kod yoki havola..." class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm font-mono text-white outline-none"></textarea>
+
+            <div id="translationPreviewBox" class="hidden grid grid-cols-1 md:grid-cols-3 gap-3 bg-black/80 border border-neutral-800 rounded-xl p-4 text-xs">
+              <div><span class="font-mono text-red-500 font-bold">UZBEK (UZ):</span><p id="prevUzTitle" class="font-semibold text-white mt-1"></p><p id="prevUzContent" class="text-neutral-400 font-mono text-[11px] mt-1"></p></div>
+              <div><span class="font-mono text-red-500 font-bold">RUSSIAN (RU):</span><p id="prevRuTitle" class="font-semibold text-white mt-1"></p><p id="prevRuContent" class="text-neutral-400 font-mono text-[11px] mt-1"></p></div>
+              <div><span class="font-mono text-red-500 font-bold">ENGLISH (EN):</span><p id="prevEnTitle" class="font-semibold text-white mt-1"></p><p id="prevEnContent" class="text-neutral-400 font-mono text-[11px] mt-1"></p></div>
+            </div>
+
+            <button type="submit" id="saveProductBtn" data-i18n="saveProductBtn" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-sm text-white transition">
+              3 Tilda Tarjima Qilib Saqlash
+            </button>
           </form>
+        </div>
+
+        <div class="bg-[#0d0d11] border border-neutral-800 rounded-2xl p-6">
+          <h3 data-i18n="manageProductsTitle" class="text-lg font-bold text-white mb-4">Katalogdagi Mahsulotlar (Tahrirlash / O'chirish)</h3>
+          <div id="adminResourcesList" class="divide-y divide-neutral-800"></div>
         </div>
       </div>
 
-      <!-- TAB 3: SOZLAMALAR -->
+      <!-- TAB 3: GOOGLE SHEETS & TARIF SOZLAMALARI -->
       <div id="adminTabSettings" class="hidden">
-        <div class="max-w-xl bg-[#0d0d11] border border-neutral-800 rounded-2xl p-6 space-y-4">
-          <h2 class="text-lg font-bold text-white">Portal Sozlamalari</h2>
-          <div>
-            <label class="block text-xs text-neutral-400 mb-1">To'lov uchun Admin Telegram Havolasi</label>
-            <input type="text" id="settingTelegram" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
+        <div class="max-w-2xl bg-[#0d0d11] border border-neutral-800 rounded-2xl p-6 space-y-5">
+          <h2 data-i18n="settingsTitle" class="text-lg font-bold text-white">Tariflar, Karta va Google Sheets Sozlamalari</h2>
+          
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-neutral-400 mb-1">1 Oylik Tarif Narxi</label>
+              <input type="text" id="settingPrice1m" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs text-neutral-400 mb-1">3 Oylik Tarif Narxi</label>
+              <input type="text" id="settingPrice3m" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white outline-none" />
+            </div>
           </div>
-          <div>
-            <label class="block text-xs text-neutral-400 mb-1">Logotip Rasm Havolasi (URL)</label>
-            <input type="text" id="settingLogoUrl" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2.5 text-sm text-white outline-none" />
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-neutral-400 mb-1">To'lov Karta Raqami</label>
+              <input type="text" id="settingCardNum" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs text-neutral-400 mb-1">Karta Egasi</label>
+              <input type="text" id="settingCardHolder" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white outline-none" />
+            </div>
           </div>
-          <button onclick="savePortalSettings()" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-sm text-white transition">Sozlamalarni Saqlash</button>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label data-i18n="tgSettingLabel" class="block text-xs text-neutral-400 mb-1">Admin Telegram Havolasi</label>
+              <input type="text" id="settingTelegram" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white outline-none" />
+            </div>
+            <div>
+              <label data-i18n="logoSettingLabel" class="block text-xs text-neutral-400 mb-1">Logotip Rasm Havolasi (URL)</label>
+              <input type="text" id="settingLogoUrl" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2 text-sm text-white outline-none" />
+            </div>
+          </div>
+
+          <!-- Google Forms / Sheets Integratsiyasi -->
+          <div class="border-t border-neutral-800 pt-4 space-y-3">
+            <h3 class="text-sm font-bold text-red-400">Google Sheets / Google Forms Ulash (Cheklarni Google jadvalga olish)</h3>
+            <div>
+              <label class="block text-xs text-neutral-400 mb-1">Google Form Action URL (.../formResponse)</label>
+              <input type="text" id="settingGoogleFormUrl" placeholder="https://docs.google.com/forms/d/e/.../formResponse" class="w-full bg-black border border-neutral-800 rounded-xl px-4 py-2 text-xs text-white outline-none" />
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <input type="text" id="settingEntryTg" placeholder="entry.111111 (TG)" class="bg-black border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white outline-none" />
+              <input type="text" id="settingEntryTariff" placeholder="entry.222222 (Tarif)" class="bg-black border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white outline-none" />
+              <input type="text" id="settingEntryNote" placeholder="entry.333333 (Chek)" class="bg-black border border-neutral-800 rounded-xl px-3 py-2 text-xs text-white outline-none" />
+            </div>
+          </div>
+
+          <button onclick="savePortalSettings()" data-i18n="saveSettingsBtn" class="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-sm text-white transition">Sozlamalarni Saqlash</button>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- 4. A'ZO PORTALI (ICHKI KATALOG VA AI GENERATORLAR) -->
+  <!-- 4. A'ZO PORTALI (QIDIRUV, SEVIMLILAR, AI GENERATORLAR) -->
   <div id="memberPortal" class="hidden min-h-screen flex flex-col">
     <header class="bg-[#0d0d11]/90 border-b border-red-900/40 px-6 py-4 sticky top-0 z-30 backdrop-blur-md">
       <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
@@ -223,9 +369,14 @@
             <span class="ml-2 text-xs text-neutral-400 hidden sm:inline">// VIP ARXIV</span>
           </div>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="inline-flex rounded-lg bg-black border border-neutral-800 p-0.5 text-[11px] font-mono">
+            <button type="button" onclick="setLanguage('uz')" class="lang-btn px-2 py-1 rounded-md transition" data-lang="uz">UZ</button>
+            <button type="button" onclick="setLanguage('ru')" class="lang-btn px-2 py-1 rounded-md transition" data-lang="ru">RU</button>
+            <button type="button" onclick="setLanguage('en')" class="lang-btn px-2 py-1 rounded-md transition" data-lang="en">EN</button>
+          </div>
           <span id="memberDaysBadge" class="px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 text-xs font-mono">Obuna faol</span>
-          <button onclick="logoutUser()" class="px-4 py-2 rounded-xl bg-neutral-900 hover:bg-red-950 border border-neutral-800 text-xs font-semibold text-neutral-300 hover:text-red-300 transition">Chiqish</button>
+          <button onclick="logoutUser()" data-i18n="logoutBtn" class="px-4 py-2 rounded-xl bg-neutral-900 hover:bg-red-950 border border-neutral-800 text-xs font-semibold text-neutral-300 hover:text-red-300 transition">Chiqish</button>
         </div>
       </div>
     </header>
@@ -233,58 +384,77 @@
     <main class="max-w-7xl w-full mx-auto p-6 space-y-8 flex-1">
       <!-- AI GENERATOR STUDIO -->
       <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- AI Kod Yaratuvchi -->
         <div class="bg-[#0d0d11] border border-red-900/40 rounded-2xl p-6 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-3">
-              <h3 class="text-base font-bold text-white">AI Dastur & Kod Yaratuvchi</h3>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-800/50">TEKIN VIP</span>
+              <h3 data-i18n="aiCodeTitle" class="text-base font-bold text-white">AI Dastur & Kod Yaratuvchi</h3>
+              <span class="text-[11px] font-mono px-2.5 py-0.5 rounded bg-red-950 text-red-400 border border-red-800/50">FREE VIP</span>
             </div>
             <select id="codePresetSelect" class="w-full bg-black border border-neutral-800 rounded-xl px-3.5 py-2.5 text-xs text-white mb-3 outline-none">
               <option value="bot">Telegram Bot Boshlang'ich Kodi (Python Aiogram)</option>
-              <option value="login">Zamonaviy Qora-Qizil Kirish Oynasi (HTML/Tailwind)</option>
-              <option value="calc">Kredit va Foyda Kalkulyatori (JavaScript)</option>
+              <option value="login">VIP Kirish Oynasi (HTML/Tailwind)</option>
+              <option value="calc">Foyda Kalkulyatori (JavaScript)</option>
+              <option value="timer">Sekundomer & Taymer Dasturi (HTML/JS)</option>
             </select>
-            <textarea id="customCodePrompt" rows="2" placeholder="Yoki o'zingiz xohlagan kod vazifasini yozing (masalan: 'Oddiy timer sayt kodi')..." class="w-full bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-3.5 py-2 text-xs text-white mb-3 outline-none"></textarea>
+            <textarea id="customCodePrompt" rows="2" data-i18n-ph="customCodePh" placeholder="Yoki o'zingiz xohlagan kod vazifasini yozing..." class="w-full bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-3.5 py-2.5 text-xs text-white mb-3 outline-none"></textarea>
           </div>
           <div>
-            <button onclick="generateAiCode()" class="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-xs text-white transition mb-3">Kod Yaratish</button>
-            <pre id="codeOutputBox" class="bg-black border border-neutral-800 rounded-xl p-3 text-[11px] font-mono text-emerald-400 overflow-x-auto max-h-44"></pre>
+            <button onclick="generateAiCode()" data-i18n="genCodeBtn" class="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-xs text-white transition mb-3">Kod Yaratish</button>
+            <pre id="codeOutputBox" class="bg-black border border-neutral-800 rounded-xl p-3.5 text-[11px] font-mono text-emerald-400 overflow-x-auto h-40"></pre>
           </div>
         </div>
 
-        <!-- AI Vektor Logotip Yasovchi -->
         <div class="bg-[#0d0d11] border border-red-900/40 rounded-2xl p-6 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-3">
-              <h3 class="text-base font-bold text-white">AI Vektor Logotip Yasovchi (SVG)</h3>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-800/50">TEKIN VIP</span>
+              <h3 data-i18n="aiLogoTitle" class="text-base font-bold text-white">AI Vektor Logotip Yasovchi (SVG)</h3>
+              <span class="text-[11px] font-mono px-2.5 py-0.5 rounded bg-red-950 text-red-400 border border-red-800/50">FREE VIP</span>
             </div>
-            <div class="grid grid-cols-2 gap-3 mb-3">
-              <input type="text" id="logoBrandInput" value="RED VAULT" placeholder="Brend nomi" class="bg-black border border-neutral-800 rounded-xl px-3.5 py-2 text-xs text-white outline-none" />
-              <select id="logoStyleSelect" class="bg-black border border-neutral-800 rounded-xl px-3.5 py-2 text-xs text-white outline-none">
-                <option value="shield">Kiber Qalqon (Shield)</option>
-                <option value="crown">VIP Qirollik Toji</option>
-                <option value="bolt">Tezkor Chaqmoq</option>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+              <input type="text" id="logoBrandInput" value="RED VAULT" data-i18n-ph="brandNamePh" placeholder="Brend nomi" class="bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none" />
+              <select id="logoStyleSelect" class="bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none">
+                <option value="custom">✨ O'zim yozgan g'oya bo'yicha (Custom AI)</option>
+                <option value="shield">🛡️ Kiber Qalqon (Shield)</option>
+                <option value="crown">👑 VIP Qirollik Toji (Crown)</option>
+                <option value="bolt">⚡ Tezkor Chaqmoq (Bolt)</option>
+                <option value="diamond">💎 Qizil Olmos (Diamond)</option>
+                <option value="eye">👁️ Kiber Ko'z (Cyber Eye)</option>
+                <option value="flame">🔥 Qora-Qizil Olov (Flame)</option>
+                <option value="star">⭐ VIP Yulduz (Star Emblem)</option>
+                <option value="hex">⬢ Kiber Oltiburchak (Hexagon)</option>
+                <option value="sword">⚔️ Kiber Qilich (Blade)</option>
               </select>
             </div>
-            <button onclick="generateAiLogo()" class="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-xs text-white transition mb-3">Logotip Yaratish</button>
+            <textarea id="logoCustomPrompt" rows="2" data-i18n-ph="logoPromptPh" placeholder="Logotip ko'rinishini yozing..." class="w-full bg-black border border-neutral-800 focus:border-red-600 rounded-xl px-3.5 py-2.5 text-xs text-white mb-3 outline-none"></textarea>
           </div>
-          <div class="bg-black border border-neutral-800 rounded-xl p-4 flex items-center justify-between">
-            <div id="logoPreviewContainer" class="flex items-center gap-3"></div>
-            <button onclick="downloadGeneratedSvg()" class="px-3 py-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-xs text-white transition">SVG Yuklash</button>
+          <div>
+            <button onclick="generateAiLogo()" data-i18n="genLogoBtn" class="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 font-bold text-xs text-white transition mb-3">Logotip Yaratish</button>
+            <div class="bg-black border border-neutral-800 rounded-xl p-4 h-40 flex items-center justify-between gap-4">
+              <div id="logoPreviewContainer" class="flex items-center gap-4"></div>
+              <button onclick="downloadGeneratedSvg()" data-i18n="downloadSvgBtn" class="px-4 py-2 rounded-xl bg-neutral-900 hover:bg-red-600 border border-neutral-700 text-xs font-bold text-white transition shrink-0">
+                SVG Yuklash
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- KATEGORIYALAR VA KATALOG -->
+      <!-- QIDIRUV, SEVIMLILAR VA KATEGORIYALAR -->
       <section class="space-y-4">
-        <div class="flex flex-wrap items-center gap-2" id="categoryFilterBar">
-          <button onclick="filterMemberCategory('Barchasi')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-red-600 text-white">Barchasi</button>
-          <button onclick="filterMemberCategory('AI Promptlar')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800">AI Promptlar</button>
-          <button onclick="filterMemberCategory('Shablonlar & Dizayn')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800">Shablonlar & Dizayn</button>
-          <button onclick="filterMemberCategory('Telegram Stiker-paklar')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800">Telegram Stiker-paklar</button>
-          <button onclick="filterMemberCategory('Procreate Brushes')" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800">Procreate Brushes</button>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-2" id="categoryFilterBar">
+            <button onclick="filterMemberCategory('Barchasi')" data-cat="Barchasi" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-red-600 text-white">Barchasi</button>
+            <button onclick="filterMemberCategory('Sevimlilar')" data-cat="Sevimlilar" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-amber-400 border border-neutral-800">★ Sevimlilar</button>
+            <button onclick="filterMemberCategory('AI Promptlar')" data-cat="AI Promptlar" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800">AI Promptlar</button>
+            <button onclick="filterMemberCategory('Shablonlar & Dizayn')" data-cat="Shablonlar & Dizayn" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800">Shablonlar & Dizayn</button>
+            <button onclick="filterMemberCategory('Telegram Stiker-paklar')" data-cat="Telegram Stiker-paklar" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800">Telegram Stiker-paklar</button>
+            <button onclick="filterMemberCategory('Procreate Brushes')" data-cat="Procreate Brushes" class="cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800">Procreate Brushes</button>
+          </div>
+
+          <div class="w-full md:w-72">
+            <input type="text" id="memberSearchInput" oninput="renderResourcesGrid()" data-i18n-ph="searchPh" placeholder="Qidirish (prompt, shablon, stiker)..."
+              class="w-full bg-[#0d0d11] border border-neutral-800 focus:border-red-600 rounded-xl px-4 py-2 text-xs text-white outline-none" />
+          </div>
         </div>
 
         <div id="resourcesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
@@ -302,15 +472,238 @@
       <p id="modalDesc" class="text-xs text-neutral-400"></p>
       <pre id="modalContent" class="bg-black border border-neutral-800 rounded-xl p-4 text-xs font-mono text-neutral-200 overflow-x-auto max-h-72 whitespace-pre-wrap"></pre>
       <div class="flex justify-end gap-3">
-        <button onclick="copyModalContent()" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-xs font-bold text-white">Nusxa Olish</button>
-        <button onclick="closeResourceModal()" class="px-4 py-2 rounded-xl bg-neutral-900 text-xs font-semibold text-neutral-300">Yopish</button>
+        <button onclick="copyModalContent()" data-i18n="copyBtn" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-xs font-bold text-white">Nusxa Olish</button>
+        <button onclick="closeResourceModal()" data-i18n="closeBtn" class="px-4 py-2 rounded-xl bg-neutral-900 text-xs font-semibold text-neutral-300">Yopish</button>
       </div>
     </div>
   </div>
 
   <script>
-    const STORAGE_KEY = 'red_vault_clean_v1';
+    const STORAGE_KEY = 'red_vault_google_v5';
     const DEFAULT_LOGO = 'https://yt3.googleusercontent.com/ytc/AIdro_nRqzN4-JA3rOOrrh2A3uKKR7es1ggyuUwYEMGf0cGkirqW=s900-c-k-c0x00ffffff-no-rj';
+    let currentLang = localStorage.getItem('rv_lang') || 'uz';
+    let currentMemberUser = null;
+    let selectedTariffName = '1 Oy';
+    let logoSeedCounter = 1;
+
+    function getDeviceToken() {
+      let token = localStorage.getItem('rv_device_id');
+      if (!token) {
+        token = 'DEV-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        localStorage.setItem('rv_device_id', token);
+      }
+      return token;
+    }
+
+    const i18n = {
+      uz: {
+        loginSubtitle: "Raqamli Resurslar, AI Generatorlar va Dizayn Aktivlari Portali",
+        idLabel: "ID",
+        idPlaceholder: "ID raqamingizni kiriting",
+        passLabel: "Parol",
+        loginBtn: "Kirish",
+        buyAccessBtn: "Kirish huquqini olish (Tariflar & To'lov)",
+        singleDeviceHint: "Himoya: 1 ta ID faqat 1 ta qurilmada ishlaydi",
+        vitrinTitle: "Ichkarida nimalar bor? (VIP Arxiv Vitrinasi)",
+        vitrinLockedBadge: "🔒 Faqat a'zolar uchun ochiq",
+        payModalTitle: "VIP Obuna Tariflari & To'lov",
+        tariffDesc1: "Barcha resurslar + AI",
+        tariffDesc3: "Tejamkor VIP paket",
+        cardLabel: "To'lov uchun karta raqami:",
+        reqTgPh: "Telegram username yoki telefoningiz (@username)",
+        reqNotePh: "To'lov cheki raqami yoki vaqti (masalan: 14:25 da o'tkazdim)",
+        sendReqBtn: "So'rov Yuborish (Google & Admin)",
+        openTgDirect: "Telegramga o'tish",
+        loginErr: "Xatolik: ID yoki parol noto'g'ri kiritildi!",
+        deviceLockedErr: "Xavfsizlik xatosi: Ushbu ID boshqa qurilmaga bog'langan! Admin bilan bog'laning.",
+        expiredTitle: "Diqqat! Obuna muddatingiz tugadi",
+        contactAdminPay: "To'lovni Yangilash",
+        logoutBtn: "Chiqish",
+        tabMembers: "A'zolar & Muddatlar",
+        tabAddProduct: "Mahsulotlar Boshqaruvi",
+        tabSettings: "Google & Tarif Sozlamalari",
+        addMemberTitle: "Yangi A'zo Qo'shish (ID & Muddat Belgilash)",
+        addMemberDesc: "To'lov qilgan mijozga ID, parol va amal qilish muddatini bering. Band ID kiritilsa tizim xatolik beradi.",
+        addMemberBtn: "+ A'zoni Qo'shish",
+        activeMembersTitle: "Faol A'zolar Ro'yxati",
+        activeMembersSub: "Har bir a'zo faqat 1 ta qurilmadan kira oladi. Qurilma blokini Reset tugmasi bilan yangilash mumkin.",
+        thPass: "Parol",
+        thDevice: "Qurilma Himoyasi",
+        thExpires: "Tugash Sanasi & Holat",
+        thActions: "Boshqaruv",
+        addProductTitle: "Katalogga Yangi Mahsulot / Prompt Qo'shish",
+        addProductDesc: "Kiritilgan matn avtomatik tarzda O'zbek, Rus va Ingliz tillariga o'girilib saqlanadi.",
+        saveProductBtn: "3 Tilda Tarjima Qilib Saqlash",
+        manageProductsTitle: "Katalogdagi Mahsulotlar (Tahrirlash / O'chirish)",
+        settingsTitle: "Tariflar, Karta va Google Sheets Sozlamalari",
+        tgSettingLabel: "Admin Telegram Havolasi",
+        logoSettingLabel: "Logotip Rasm Havolasi (URL)",
+        saveSettingsBtn: "Sozlamalarni Saqlash",
+        aiCodeTitle: "AI Dastur & Kod Yaratuvchi",
+        customCodePh: "Yoki o'zingiz xohlagan kod vazifasini yozing...",
+        genCodeBtn: "Kod Yaratish",
+        aiLogoTitle: "AI Vektor Logotip Yasovchi (SVG)",
+        brandNamePh: "Brend nomi",
+        logoPromptPh: "Logotip ko'rinishini yozing...",
+        genLogoBtn: "Logotip Yaratish",
+        downloadSvgBtn: "SVG Yuklash",
+        searchPh: "Qidirish (prompt, shablon, stiker)...",
+        openDownloadBtn: "Ochish & Yuklab Olish",
+        copyBtn: "Nusxa Olish",
+        closeBtn: "Yopish",
+        freeBadge: "TEKIN",
+        daysLeftText: "kun qoldi",
+        expiredBadge: "Muddati tugagan!",
+        deleteBtn: "O'chirish",
+        editBtn: "Tahrirlash",
+        cats: {
+          "Barchasi": "Barchasi",
+          "Sevimlilar": "★ Sevimlilar",
+          "AI Promptlar": "AI Promptlar",
+          "Shablonlar & Dizayn": "Shablonlar & Dizayn",
+          "Telegram Stiker-paklar": "Telegram Stiker-paklar",
+          "Procreate Brushes": "Procreate Brushes"
+        }
+      },
+      ru: {
+        loginSubtitle: "Портал цифровых ресурсов, AI-генераторов и дизайн-активов",
+        idLabel: "ID пользователя",
+        idPlaceholder: "Введите ваш ID",
+        passLabel: "Пароль",
+        loginBtn: "Войти",
+        buyAccessBtn: "Получить доступ (Тарифы и Оплата)",
+        singleDeviceHint: "Защита: 1 ID работает только на 1 устройстве",
+        vitrinTitle: "Что внутри? (Витрина VIP Архива)",
+        vitrinLockedBadge: "🔒 Доступно только участникам",
+        payModalTitle: "Тарифы VIP Подписки и Оплата",
+        tariffDesc1: "Все ресурсы + AI",
+        tariffDesc3: "Выгодный VIP пакет",
+        cardLabel: "Номер карты для оплаты:",
+        reqTgPh: "Ваш Telegram username или телефон (@username)",
+        reqNotePh: "Время перевода или номер чека",
+        sendReqBtn: "Отправить заявку (Google и Админ)",
+        openTgDirect: "Перейти в Telegram",
+        loginErr: "Ошибка: Неверный ID или пароль!",
+        deviceLockedErr: "Ошибка защиты: Этот ID привязан к другому устройству! Свяжитесь с Админом.",
+        expiredTitle: "Внимание! Срок вашей подписки истек",
+        contactAdminPay: "Продлить Оплату",
+        logoutBtn: "Выйти",
+        tabMembers: "Участники и Сроки",
+        tabAddProduct: "Управление Продуктами",
+        tabSettings: "Google и Тарифы",
+        addMemberTitle: "Добавить участника (ID и Срок подписки)",
+        addMemberDesc: "Выдайте оплатившему клиенту ID, пароль и срок действия. Занятый ID вызовет ошибку.",
+        addMemberBtn: "+ Добавить",
+        activeMembersTitle: "Список активных участников",
+        activeMembersSub: "Каждый ID привязан к 1 устройству. Сбросить привязку можно кнопкой Reset.",
+        thPass: "Пароль",
+        thDevice: "Защита Устройства",
+        thExpires: "Срок окончания и Статус",
+        thActions: "Управление",
+        addProductTitle: "Добавить новый продукт / промпт в каталог",
+        addProductDesc: "Текст автоматически переводится на узбекский, русский и английский языки.",
+        saveProductBtn: "Перевести на 3 языка и сохранить",
+        manageProductsTitle: "Товары в каталоге (Редактировать / Удалить)",
+        settingsTitle: "Тарифы, Карта и Настройки Google Sheets",
+        tgSettingLabel: "Ссылка на Telegram Админа",
+        logoSettingLabel: "Ссылка на логотип (URL)",
+        saveSettingsBtn: "Сохранить настройки",
+        aiCodeTitle: "AI Генератор Кода и Программ",
+        customCodePh: "Опишите задачу для кода...",
+        genCodeBtn: "Создать код",
+        aiLogoTitle: "AI Генератор Векторных Логотипов (SVG)",
+        brandNamePh: "Название бренда",
+        logoPromptPh: "Опишите вид логотипа...",
+        genLogoBtn: "Создать логотип",
+        downloadSvgBtn: "Скачать SVG",
+        searchPh: "Поиск (промпт, шаблон, стикеры)...",
+        openDownloadBtn: "Открыть и Скачать",
+        copyBtn: "Копировать",
+        closeBtn: "Закрыть",
+        freeBadge: "БЕСПЛАТНО",
+        daysLeftText: "дн. осталось",
+        expiredBadge: "Срок истек!",
+        deleteBtn: "Удалить",
+        editBtn: "Изменить",
+        cats: {
+          "Barchasi": "Все",
+          "Sevimlilar": "★ Избранное",
+          "AI Promptlar": "AI Промпты",
+          "Shablonlar & Dizayn": "Шаблоны и Дизайн",
+          "Telegram Stiker-paklar": "Telegram Стикер-паки",
+          "Procreate Brushes": "Кисти Procreate"
+        }
+      },
+      en: {
+        loginSubtitle: "Digital Assets, AI Generators & Design Resources Portal",
+        idLabel: "User ID",
+        idPlaceholder: "Enter your ID",
+        passLabel: "Password",
+        loginBtn: "Sign In",
+        buyAccessBtn: "Get Access (Plans & Payment)",
+        singleDeviceHint: "Security: 1 ID is locked to 1 device only",
+        vitrinTitle: "What's Inside? (VIP Vault Showcase)",
+        vitrinLockedBadge: "🔒 Members Only",
+        payModalTitle: "VIP Subscription Plans & Payment",
+        tariffDesc1: "All assets + AI Tools",
+        tariffDesc3: "Best value VIP bundle",
+        cardLabel: "Card number for payment:",
+        reqTgPh: "Your Telegram username or phone (@username)",
+        reqNotePh: "Payment receipt details or transfer time",
+        sendReqBtn: "Submit Request (Google & Admin)",
+        openTgDirect: "Open Telegram",
+        loginErr: "Error: Invalid ID or password!",
+        deviceLockedErr: "Security Alert: This ID is bound to another device! Contact Admin to reset.",
+        expiredTitle: "Attention! Your Subscription Has Expired",
+        contactAdminPay: "Renew Payment",
+        logoutBtn: "Logout",
+        tabMembers: "Members & Durations",
+        tabAddProduct: "Manage Products",
+        tabSettings: "Google & Pricing Settings",
+        addMemberTitle: "Add New Member (Assign ID & Duration)",
+        addMemberDesc: "Assign an ID, password, and active period to paying clients. Duplicate IDs are blocked.",
+        addMemberBtn: "+ Add Member",
+        activeMembersTitle: "Active Members List",
+        activeMembersSub: "Each ID locks to 1 device on first login. Use Reset to unbind.",
+        thPass: "Password",
+        thDevice: "Device Lock",
+        thExpires: "Expiration & Status",
+        thActions: "Actions",
+        addProductTitle: "Add New Product / Prompt to Catalog",
+        addProductDesc: "Text is automatically translated into Uzbek, Russian, and English.",
+        saveProductBtn: "Auto-Translate (3 Langs) & Save",
+        manageProductsTitle: "Catalog Products (Edit / Delete)",
+        settingsTitle: "Pricing, Card & Google Sheets Settings",
+        tgSettingLabel: "Admin Telegram Link",
+        logoSettingLabel: "Logo Image URL",
+        saveSettingsBtn: "Save Settings",
+        aiCodeTitle: "AI Code & App Generator",
+        customCodePh: "Describe the code you need...",
+        genCodeBtn: "Generate Code",
+        aiLogoTitle: "AI Vector Logo Maker (SVG)",
+        brandNamePh: "Brand name",
+        logoPromptPh: "Describe logo concept...",
+        genLogoBtn: "Generate Logo",
+        downloadSvgBtn: "Download SVG",
+        searchPh: "Search (prompts, templates, stickers)...",
+        openDownloadBtn: "Open & Download",
+        copyBtn: "Copy",
+        closeBtn: "Close",
+        freeBadge: "FREE",
+        daysLeftText: "days left",
+        expiredBadge: "Expired!",
+        deleteBtn: "Delete",
+        editBtn: "Edit",
+        cats: {
+          "Barchasi": "All",
+          "Sevimlilar": "★ Favorites",
+          "AI Promptlar": "AI Prompts",
+          "Shablonlar & Dizayn": "Templates & Design",
+          "Telegram Stiker-paklar": "Telegram Sticker Packs",
+          "Procreate Brushes": "Procreate Brushes"
+        }
+      }
+    };
 
     function getFutureDate(days) {
       const d = new Date();
@@ -320,68 +713,216 @@
 
     function formatDateUz(isoStr) {
       const d = new Date(isoStr);
-      const day = String(d.getDate()).padStart(2, '0');
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const year = d.getFullYear();
-      return `${day}.${month}.${year}`;
+      return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`;
     }
 
     function getDaysLeft(expiresAtIso) {
-      const diff = new Date(expiresAtIso).getTime() - Date.now();
-      return Math.ceil(diff / (1000 * 60 * 60 * 24));
+      return Math.ceil((new Date(expiresAtIso).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
     }
 
-    const defaultData = {
+  
+      const defaultData = {
       settings: {
-        telegramUrl: 'https://t.me/admin',
-        logoUrl: DEFAULT_LOGO
+        telegramUrl: 'https://t.me/SIZNING_USERNAME', // O'zingizning Telegram havolangizni yozing
+        logoUrl: DEFAULT_LOGO,
+        price1m: "50 000 so'm",
+        price3m: "120 000 so'm",
+        cardNum: "8600 0000 0000 0000", // O'zingizning karta raqamingizni yozing
+        cardHolder: "RED VAULT ADMIN",
+        googleFormUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfUnXATlE2aT0ZrpheP9EWWc4fk6PbYhzh28l_c02Fr0h-C9A/formResponse",
+        entryTg: "entry.1462281660",
+        entryTariff: "entry.1164880057",
+        entryNote: "entry.1396348608"
       },
+      paymentRequests: [],
       users: [
-        { id: 'user1', pass: '1234', createdAt: new Date().toISOString(), expiresAt: getFutureDate(30) },
-        { id: 'user2', pass: '1234', createdAt: new Date().toISOString(), expiresAt: getFutureDate(-2) }
+        { id: 'user1', pass: '1234', createdAt: new Date().toISOString(), expiresAt: getFutureDate(30), deviceToken: null, favorites: ['r1'] },
+        { id: 'user2', pass: '1234', createdAt: new Date().toISOString(), expiresAt: getFutureDate(-2), deviceToken: null, favorites: [] }
       ],
       resources: [
         {
           id: 'r1',
-          title: 'Midjourney & DALL-E Dark UI/Logo Promptlar (50+)',
           category: 'AI Promptlar',
           badge: 'PROMPT PACK',
-          desc: 'Minimalist qora-qizil brend logotiplari va kiber-interfeys dizaynlari uchun tayyor promptlar.',
-          content: '1. Minimalist crimson red emblem on pitch black background, vector style, sharp edges --v 6.0\n2. Dark mode SaaS dashboard UI, obsidian glassmorphism, subtle red neon accents --ar 16:9'
+          title: { uz: 'Midjourney & DALL-E Qora-Qizil Brend Promptlar (50+)', ru: 'Промпты Midjourney & DALL-E в черно-красном стиле (50+)', en: 'Midjourney & DALL-E Dark Crimson Brand Prompts (50+)' },
+          desc: { uz: 'Minimalist qora-qizil brend logotiplari va kiber-interfeys dizaynlari uchun tayyor promptlar.', ru: 'Готовые промпты для минималистичных черно-красных логотипов и кибер-интерфейсов.', en: 'Ready-to-use prompts for minimalist black-and-red brand logos and cyber UI designs.' },
+          content: { uz: '1. Qora fonda minimalistik qizil timsol --v 6.0\n2. Qorong\'u rejimdagi SaaS boshqaruv paneli --ar 16:9', ru: '1. Минималистичная красная эмблема на черном фоне --v 6.0\n2. Темная панель управления SaaS --ar 16:9', en: '1. Minimalist crimson red emblem on pitch black background --v 6.0\n2. Dark mode SaaS dashboard UI --ar 16:9' }
         },
         {
           id: 'r2',
-          title: 'VIP Kirish Oynasi HTML/Tailwind Shablon',
           category: 'Shablonlar & Dizayn',
           badge: 'HTML/CSS',
-          desc: 'Yopiq klublar va raqamli portallar uchun tayyor kirish formasi kodi.',
-          content: '<div class="bg-black border border-red-800 p-6 rounded-2xl text-white">\n  <h2 class="text-xl font-bold text-red-500">VIP KIRISH</h2>\n  <input type="text" placeholder="ID" class="w-full mt-3 p-2 bg-neutral-900 rounded" />\n</div>'
+          title: { uz: 'VIP Kirish Oynasi HTML/Tailwind Shablon', ru: 'HTML/Tailwind Шаблон VIP-экрана входа', en: 'VIP Gatekeeper Login HTML/Tailwind Template' },
+          desc: { uz: 'Yopiq klublar va raqamli portallar uchun tayyor kirish formasi kodi.', ru: 'Готовый код формы входа для закрытых клубов и цифровых порталов.', en: 'Ready-made login screen code for private clubs and digital portals.' },
+          content: { uz: '<div class="bg-black border border-red-800 p-6 rounded-2xl text-white">\n  <h2 class="text-xl font-bold text-red-500">VIP KIRISH</h2>\n</div>', ru: '<div class="bg-black border border-red-800 p-6 rounded-2xl text-white">\n  <h2 class="text-xl font-bold text-red-500">VIP ВХОД</h2>\n</div>', en: '<div class="bg-black border border-red-800 p-6 rounded-2xl text-white">\n  <h2 class="text-xl font-bold text-red-500">VIP ACCESS</h2>\n</div>' }
         },
         {
           id: 'r3',
-          title: 'Noir Dark Telegram Stiker-Pak (40 ta HD)',
           category: 'Telegram Stiker-paklar',
           badge: 'STIKER PAK',
-          desc: 'Qora va qizil uslubdagi eksklyuziv Telegram stikerlar to\'plami.',
-          content: 'Telegram Stiker Havolasi: https://t.me/addstickers/RedVaultNoirPack\nArxiv paroli: REDVAULT2026'
+          title: { uz: 'Noir Dark Telegram Stiker-Pak (40 ta HD)', ru: 'Набор Telegram-стикеров Noir Dark (40 HD)', en: 'Noir Dark Telegram Sticker Pack (40 HD)' },
+          desc: { uz: 'Qora va qizil uslubdagi eksklyuziv Telegram stikerlar to\'plami.', ru: 'Эксклюзивный набор стикеров Telegram в черно-красной эстетике.', en: 'Exclusive Telegram sticker collection in dark black and crimson aesthetic.' },
+          content: { uz: 'Telegram Stiker Havolasi: https://t.me/addstickers/RedVaultNoirPack\nArxiv paroli: REDVAULT2026', ru: 'Ссылка на стикеры Telegram: https://t.me/addstickers/RedVaultNoirPack\nПароль архива: REDVAULT2026', en: 'Telegram Sticker Link: https://t.me/addstickers/RedVaultNoirPack\nArchive Password: REDVAULT2026' }
         },
         {
           id: 'r4',
-          title: 'Procreate Ink & Neon Sketch Brushes (.brushset)',
           category: 'Procreate Brushes',
           badge: 'IPAD PRO',
-          desc: 'iPad Procreate dasturida komiks, manhwa va neon chizmalar yaratish uchun 35 ta maxsus mo\'yqalam.',
-          content: 'Paket tarkibi: Crimson Blood Ink, Noir Charcoal Sketch, Neon Rim Light\nMoslik: iPadOS / Procreate 5X+'
+          title: { uz: 'Procreate Ink & Neon Sketch Brushes (.brushset)', ru: 'Кисти Procreate Ink & Neon Sketch (.brushset)', en: 'Procreate Ink & Neon Sketch Brushes (.brushset)' },
+          desc: { uz: 'iPad Procreate dasturida komiks, manhwa va neon chizmalar yaratish uchun 35 ta maxsus mo\'yqalam.', ru: '35 специальных кистей для рисования манхвы, комиксов и неоновых артов на iPad в Procreate.', en: '35 custom brushes for drawing comics, manhwa, and neon illustrations in iPad Procreate.' },
+          content: { uz: 'Paket tarkibi: Crimson Blood Ink, Noir Charcoal Sketch, Neon Rim Light\nMoslik: iPadOS / Procreate 5X+', ru: 'В наборе: Crimson Blood Ink, Noir Charcoal Sketch, Neon Rim Light\nСовместимость: iPadOS / Procreate 5X+', en: 'Included: Crimson Blood Ink, Noir Charcoal Sketch, Neon Rim Light\nCompatibility: iPadOS / Procreate 5X+' }
         }
       ]
     };
 
     let appData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultData;
+    if (!appData.paymentRequests) appData.paymentRequests = [];
     let currentCategory = 'Barchasi';
 
     function saveData() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
       applyLogosAndLinks();
+      renderPublicVitrin();
+    }
+
+    function getLocalizedField(field) {
+      if (typeof field === 'string') return field;
+      return field[currentLang] || field.uz || '';
+    }
+
+    function renderPublicVitrin() {
+      const grid = document.getElementById('publicVitrinGrid');
+      if (!grid) return;
+      grid.innerHTML = appData.resources.slice(0, 4).map(item => `
+        <div onclick="openPaymentModal()" class="cursor-pointer bg-[#0d0d11]/90 border border-neutral-800/90 hover:border-red-700/70 rounded-2xl p-4 relative overflow-hidden group transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-900/50">${item.badge}</span>
+            <span class="text-xs text-red-500">🔒</span>
+          </div>
+          <h4 class="text-xs font-bold text-white line-clamp-1 mb-1">${getLocalizedField(item.title)}</h4>
+          <p class="text-[11px] text-neutral-400 line-clamp-2 blur-[1.5px] group-hover:blur-0 transition">${getLocalizedField(item.desc)}</p>
+        </div>
+      `).join('');
+    }
+
+    function openPaymentModal() {
+      document.getElementById('displayPrice1m').textContent = appData.settings.price1m;
+      document.getElementById('displayPrice3m').textContent = appData.settings.price3m;
+      document.getElementById('displayCardNumber').textContent = appData.settings.cardNum;
+      document.getElementById('displayCardHolder').textContent = appData.settings.cardHolder;
+      document.getElementById('reqSuccessMsg').classList.add('hidden');
+      document.getElementById('paymentModal').classList.remove('hidden');
+    }
+
+    function closePaymentModal() {
+      document.getElementById('paymentModal').classList.add('hidden');
+    }
+
+    function selectTariff(tariff) {
+      selectedTariffName = tariff;
+      document.getElementById('tariffCard1').className = tariff === '1 Oy'
+        ? 'cursor-pointer p-4 rounded-xl bg-black border-2 border-red-600 transition'
+        : 'cursor-pointer p-4 rounded-xl bg-black border border-neutral-800 hover:border-red-700 transition';
+      document.getElementById('tariffCard3').className = tariff === '3 Oy'
+        ? 'cursor-pointer p-4 rounded-xl bg-black border-2 border-red-600 transition'
+        : 'cursor-pointer p-4 rounded-xl bg-black border border-neutral-800 hover:border-red-700 transition';
+    }
+
+    function copyCardNumber() {
+      navigator.clipboard.writeText(appData.settings.cardNum);
+      alert("Karta raqami nusxalandi!");
+    }
+
+    // GOOGLE SHEETS / GOOGLE FORMS GA VA ADMIN PANELGA YUBORISH
+    document.getElementById('paymentRequestForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submitPayReqBtn');
+      const origBtnText = submitBtn.textContent;
+      submitBtn.textContent = 'Google jadvalga yuborilmoqda...';
+      submitBtn.disabled = true;
+
+      const userTg = document.getElementById('reqUserTg').value.trim();
+      const note = document.getElementById('reqNote').value.trim();
+      const timeStr = formatDateUz(new Date().toISOString());
+
+      appData.paymentRequests.unshift({
+        id: 'req_' + Date.now(),
+        tg: userTg,
+        tariff: selectedTariffName,
+        note: note,
+        time: timeStr
+      });
+      saveData();
+
+      const formUrl = (appData.settings.googleFormUrl || '').trim();
+      const entryTg = (appData.settings.entryTg || '').trim();
+      const entryTariff = (appData.settings.entryTariff || '').trim();
+      const entryNote = (appData.settings.entryNote || '').trim();
+
+      if (formUrl && entryTg && entryTariff && entryNote) {
+        const formData = new FormData();
+        formData.append(entryTg, userTg);
+        formData.append(entryTariff, selectedTariffName);
+        formData.append(entryNote, `${note} (${timeStr})`);
+
+        try {
+          await fetch(formUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: formData
+          });
+        } catch (err) {
+          console.error('Google Form xatosi:', err);
+        }
+      }
+
+      e.target.reset();
+      submitBtn.textContent = origBtnText;
+      submitBtn.disabled = false;
+
+      const msg = document.getElementById('reqSuccessMsg');
+      msg.textContent = "Ma'lumotlaringiz Google jadvalga va Adminga yuborildi! Tez orada sizga ID va Parol beriladi.";
+      msg.classList.remove('hidden');
+    });
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('rv_lang', lang);
+      const t = i18n[lang];
+
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.className = btn.dataset.lang === lang
+          ? 'lang-btn px-2.5 py-1 rounded-md bg-red-600 text-white font-bold transition'
+          : 'lang-btn px-2.5 py-1 rounded-md text-neutral-400 hover:text-white transition';
+      });
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) el.textContent = t[key];
+      });
+
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        if (t[key]) el.placeholder = t[key];
+      });
+
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        const rawCat = btn.getAttribute('data-cat');
+        if (t.cats[rawCat]) btn.textContent = t.cats[rawCat];
+      });
+
+      renderPublicVitrin();
+      if (!document.getElementById('adminDashboard').classList.contains('hidden')) {
+        renderMembersTable();
+        renderAdminResourcesList();
+      }
+      if (!document.getElementById('memberPortal').classList.contains('hidden')) {
+        renderResourcesGrid();
+        if (currentMemberUser) {
+          const daysLeft = getDaysLeft(currentMemberUser.expiresAt);
+          document.getElementById('memberDaysBadge').textContent = `ID: ${currentMemberUser.id} | ${daysLeft} ${t.daysLeftText}`;
+        }
+      }
     }
 
     function applyLogosAndLinks() {
@@ -391,45 +932,116 @@
         const el = document.getElementById(id);
         if (el) el.src = logo;
       });
-      ['buyAccessLink', 'expiredTelegramBtn'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.href = tg;
-      });
+      const buyLink = document.getElementById('buyAccessLink');
+      if (buyLink) buyLink.href = tg;
     }
 
-    // KIRISH MANTIQI
+    async function translateText(text, targetLang) {
+      if (!text) return '';
+      try {
+        const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=uz|${targetLang}`);
+        const data = await res.json();
+        if (data && data.responseData && data.responseData.translatedText) {
+          return data.responseData.translatedText;
+        }
+      } catch (e) {}
+      return `[${targetLang.toUpperCase()}] ${text}`;
+    }
+
+    async function buildMultilangItem(title, desc, content) {
+      const [ruTitle, enTitle, ruDesc, enDesc, ruContent, enContent] = await Promise.all([
+        translateText(title, 'ru'), translateText(title, 'en'),
+        translateText(desc, 'ru'), translateText(desc, 'en'),
+        translateText(content, 'ru'), translateText(content, 'en')
+      ]);
+      return {
+        title: { uz: title, ru: ruTitle, en: enTitle },
+        desc: { uz: desc, ru: ruDesc, en: enDesc },
+        content: { uz: content, ru: ruContent, en: enContent }
+      };
+    }
+
+    async function autoTranslateResourceFields() {
+      const title = document.getElementById('resTitle').value.trim();
+      const desc = document.getElementById('resDesc').value.trim();
+      const content = document.getElementById('resContent').value.trim();
+      if (!title || !content) return;
+
+      const btn = document.getElementById('translatePreviewBtn');
+      btn.textContent = '...';
+      const translated = await buildMultilangItem(title, desc, content);
+      btn.textContent = 'UZ / RU / EN Tarjimani Tekshirish';
+
+      document.getElementById('prevUzTitle').textContent = translated.title.uz;
+      document.getElementById('prevUzContent').textContent = translated.content.uz;
+      document.getElementById('prevRuTitle').textContent = translated.title.ru;
+      document.getElementById('prevRuContent').textContent = translated.content.ru;
+      document.getElementById('prevEnTitle').textContent = translated.title.en;
+      document.getElementById('prevEnContent').textContent = translated.content.en;
+      document.getElementById('translationPreviewBox').classList.remove('hidden');
+    }
+
     document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const idVal = document.getElementById('loginIdInput').value.trim();
       const passVal = document.getElementById('loginPassInput').value.trim();
       const errBox = document.getElementById('loginError');
+      const t = i18n[currentLang];
 
       if (idVal === 'admin' && passVal === 'admin123') {
         errBox.classList.add('hidden');
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('adminDashboard').classList.remove('hidden');
         renderMembersTable();
+        renderPaymentRequests();
+        renderAdminResourcesList();
         document.getElementById('settingTelegram').value = appData.settings.telegramUrl;
         document.getElementById('settingLogoUrl').value = appData.settings.logoUrl;
+        document.getElementById('settingPrice1m').value = appData.settings.price1m;
+        document.getElementById('settingPrice3m').value = appData.settings.price3m;
+        document.getElementById('settingCardNum').value = appData.settings.cardNum;
+        document.getElementById('settingCardHolder').value = appData.settings.cardHolder;
+        document.getElementById('settingGoogleFormUrl').value = appData.settings.googleFormUrl || '';
+        document.getElementById('settingEntryTg').value = appData.settings.entryTg || '';
+        document.getElementById('settingEntryTariff').value = appData.settings.entryTariff || '';
+        document.getElementById('settingEntryNote').value = appData.settings.entryNote || '';
         return;
       }
 
       const foundUser = appData.users.find(u => u.id === idVal && u.pass === passVal);
       if (!foundUser) {
-        errBox.textContent = "Xatolik: ID yoki parol noto'g'ri kiritildi!";
+        errBox.textContent = t.loginErr;
         errBox.classList.remove('hidden');
         return;
       }
 
+      const myDevice = getDeviceToken();
+      if (foundUser.deviceToken && foundUser.deviceToken !== myDevice) {
+        errBox.textContent = t.deviceLockedErr;
+        errBox.classList.remove('hidden');
+        return;
+      }
+      if (!foundUser.deviceToken) {
+        foundUser.deviceToken = myDevice;
+        saveData();
+      }
+
+      currentMemberUser = foundUser;
+      if (!currentMemberUser.favorites) currentMemberUser.favorites = [];
       errBox.classList.add('hidden');
       document.getElementById('loginScreen').classList.add('hidden');
 
       const daysLeft = getDaysLeft(foundUser.expiresAt);
       if (daysLeft <= 0) {
-        document.getElementById('expiredUserText').textContent = `Hurmatli "${foundUser.id}", sizning to'lov muddatingiz (${formatDateUz(foundUser.expiresAt)}) tugadi. Davom etish uchun Admin bilan bog'lanib to'lov qiling, aks holda ID o'chiriladi.`;
+        const expMessages = {
+          uz: `Hurmatli "${foundUser.id}", sizning to'lov muddatingiz (${formatDateUz(foundUser.expiresAt)}) tugadi. Davom etish uchun to'lovni yangilang, aks holda ID o'chiriladi.`,
+          ru: `Уважаемый "${foundUser.id}", срок вашей оплаты (${formatDateUz(foundUser.expiresAt)}) истек. Продлите оплату, иначе ваш ID будет удален.`,
+          en: `Dear "${foundUser.id}", your subscription period (${formatDateUz(foundUser.expiresAt)}) has expired. Renew payment to continue.`
+        };
+        document.getElementById('expiredUserText').textContent = expMessages[currentLang];
         document.getElementById('expiredScreen').classList.remove('hidden');
       } else {
-        document.getElementById('memberDaysBadge').textContent = `ID: ${foundUser.id} | ${daysLeft} kun qoldi`;
+        document.getElementById('memberDaysBadge').textContent = `ID: ${foundUser.id} | ${daysLeft} ${t.daysLeftText}`;
         document.getElementById('memberPortal').classList.remove('hidden');
         renderResourcesGrid();
         generateAiCode();
@@ -438,6 +1050,7 @@
     });
 
     function logoutUser() {
+      currentMemberUser = null;
       document.getElementById('adminDashboard').classList.add('hidden');
       document.getElementById('memberPortal').classList.add('hidden');
       document.getElementById('expiredScreen').classList.add('hidden');
@@ -445,16 +1058,40 @@
       document.getElementById('loginPassInput').value = '';
     }
 
-    // ADMIN FUNKSIYALARI
     function switchAdminTab(tab) {
       ['Members', 'Resources', 'Settings'].forEach(name => {
         document.getElementById('adminTab' + name).classList.add('hidden');
-        const btn = document.getElementById('tabBtn' + name);
-        btn.className = 'px-4 py-2 rounded-lg text-xs font-semibold bg-neutral-900 text-neutral-400 hover:text-white transition';
+        document.getElementById('tabBtn' + name).className = 'px-4 py-2 rounded-lg text-xs font-semibold bg-neutral-900 text-neutral-400 hover:text-white transition';
       });
       const activeName = tab.charAt(0).toUpperCase() + tab.slice(1);
       document.getElementById('adminTab' + activeName).classList.remove('hidden');
       document.getElementById('tabBtn' + activeName).className = 'px-4 py-2 rounded-lg text-xs font-semibold bg-red-600 text-white transition';
+    }
+
+    function renderPaymentRequests() {
+      const sec = document.getElementById('paymentRequestsSection');
+      const list = document.getElementById('paymentRequestsList');
+      if (!appData.paymentRequests.length) {
+        sec.classList.add('hidden');
+        return;
+      }
+      sec.classList.remove('hidden');
+      list.innerHTML = appData.paymentRequests.map(req => `
+        <div class="bg-black border border-neutral-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div>
+            <span class="font-bold text-white">${req.tg}</span>
+            <span class="ml-2 px-2 py-0.5 rounded bg-red-950 text-red-400 font-mono">${req.tariff}</span>
+            <span class="ml-2 text-neutral-400">${req.note} (${req.time})</span>
+          </div>
+          <button onclick="dismissPaymentRequest('${req.id}')" class="px-3 py-1 rounded-lg bg-neutral-800 hover:bg-red-900 text-neutral-300">Yopish</button>
+        </div>
+      `).join('');
+    }
+
+    function dismissPaymentRequest(reqId) {
+      appData.paymentRequests = appData.paymentRequests.filter(r => r.id !== reqId);
+      saveData();
+      renderPaymentRequests();
     }
 
     document.getElementById('addMemberForm').addEventListener('submit', function(e) {
@@ -469,7 +1106,7 @@
       okEl.classList.add('hidden');
 
       if (newId.toLowerCase() === 'admin' || appData.users.some(u => u.id.toLowerCase() === newId.toLowerCase())) {
-        errEl.textContent = `Xatolik: "${newId}" ID raqami bazada allaqachon band! Boshqa ID kiriting.`;
+        errEl.textContent = `ID "${newId}" band / занят / already exists!`;
         errEl.classList.remove('hidden');
         return;
       }
@@ -478,22 +1115,32 @@
         id: newId,
         pass: newPass,
         createdAt: new Date().toISOString(),
-        expiresAt: getFutureDate(days)
+        expiresAt: getFutureDate(days),
+        deviceToken: null,
+        favorites: []
       });
       saveData();
       renderMembersTable();
       document.getElementById('newMemberId').value = '';
       document.getElementById('newMemberPass').value = '';
-      okEl.textContent = `Muvaffaqiyatli qo'shildi: ${newId}`;
+      okEl.textContent = `OK: ${newId}`;
       okEl.classList.remove('hidden');
     });
+
+    function resetMemberDevice(id) {
+      const user = appData.users.find(u => u.id === id);
+      if (user) {
+        user.deviceToken = null;
+        saveData();
+        renderMembersTable();
+      }
+    }
 
     function extendMember(id, extraDays) {
       const user = appData.users.find(u => u.id === id);
       if (!user) return;
       const baseTime = Math.max(Date.now(), new Date(user.expiresAt).getTime());
-      const nextDate = new Date(baseTime + extraDays * 24 * 60 * 60 * 1000);
-      user.expiresAt = nextDate.toISOString();
+      user.expiresAt = new Date(baseTime + extraDays * 24 * 60 * 60 * 1000).toISOString();
       saveData();
       renderMembersTable();
     }
@@ -506,91 +1153,211 @@
 
     function renderMembersTable() {
       const tbody = document.getElementById('membersTableBody');
-      document.getElementById('memberCountBadge').textContent = `${appData.users.length} ta a'zo`;
+      const t = i18n[currentLang];
+      document.getElementById('memberCountBadge').textContent = `${appData.users.length}`;
       tbody.innerHTML = appData.users.map(u => {
         const daysLeft = getDaysLeft(u.expiresAt);
         const statusBadge = daysLeft > 0
-          ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-mono">${formatDateUz(u.expiresAt)} (${daysLeft} kun)</span>`
-          : `<span class="px-2.5 py-0.5 rounded-full bg-red-950 text-red-400 border border-red-700 text-xs font-mono font-bold">Muddati tugagan!</span>`;
+          ? `<span class="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-mono">${formatDateUz(u.expiresAt)} (${daysLeft})</span>`
+          : `<span class="px-2.5 py-0.5 rounded-full bg-red-950 text-red-400 border border-red-700 text-xs font-mono font-bold">${t.expiredBadge}</span>`;
+        const deviceInfo = u.deviceToken
+          ? `<span class="text-xs font-mono text-amber-400">${u.deviceToken}</span> <button onclick="resetMemberDevice('${u.id}')" class="ml-1 text-[10px] underline text-neutral-400 hover:text-white">Reset</button>`
+          : `<span class="text-xs text-neutral-500">Bog'lanmagan</span>`;
         return `
           <tr class="hover:bg-neutral-900/40">
             <td class="py-3.5 px-3 font-mono font-bold text-white">${u.id}</td>
             <td class="py-3.5 px-3 font-mono text-emerald-400">${u.pass}</td>
-            <td class="py-3.5 px-3 text-neutral-400 text-xs">${formatDateUz(u.createdAt)}</td>
+            <td class="py-3.5 px-3">${deviceInfo}</td>
             <td class="py-3.5 px-3">${statusBadge}</td>
             <td class="py-3.5 px-3 text-right space-x-2">
-              <button onclick="extendMember('${u.id}', 30)" class="px-3 py-1 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-emerald-300 text-xs font-semibold transition">+1 Oy</button>
-              <button onclick="deleteMember('${u.id}')" class="px-3 py-1 rounded-lg bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-semibold transition">O'chirish</button>
+              <button onclick="extendMember('${u.id}', 30)" class="px-3 py-1 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-emerald-300 text-xs font-semibold transition">+30d</button>
+              <button onclick="deleteMember('${u.id}')" class="px-3 py-1 rounded-lg bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-semibold transition">${t.deleteBtn}</button>
             </td>
           </tr>
         `;
       }).join('');
     }
 
-    document.getElementById('addResourceForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      appData.resources.unshift({
-        id: 'r' + Date.now(),
-        title: document.getElementById('resTitle').value.trim(),
-        category: document.getElementById('resCategory').value,
-        badge: document.getElementById('resBadge').value.trim().toUpperCase(),
-        desc: document.getElementById('resDesc').value.trim(),
-        content: document.getElementById('resContent').value.trim()
-      });
+    function renderAdminResourcesList() {
+      const container = document.getElementById('adminResourcesList');
+      const t = i18n[currentLang];
+      container.innerHTML = appData.resources.map(item => `
+        <div class="py-3.5 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-red-950 text-red-400 mr-2">${item.badge}</span>
+            <span class="font-bold text-sm text-white">${getLocalizedField(item.title)}</span>
+            <span class="text-xs text-neutral-500 ml-2">(${item.category})</span>
+          </div>
+          <div class="space-x-2">
+            <button onclick="startEditResource('${item.id}')" class="px-3 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-xs text-white transition">${t.editBtn}</button>
+            <button onclick="deleteAdminResource('${item.id}')" class="px-3 py-1 rounded-lg bg-red-950 hover:bg-red-900 border border-red-800 text-xs text-red-300 transition">${t.deleteBtn}</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function startEditResource(id) {
+      const item = appData.resources.find(r => r.id === id);
+      if (!item) return;
+      document.getElementById('editingResourceId').value = item.id;
+      document.getElementById('resTitle').value = getLocalizedField(item.title);
+      document.getElementById('resCategory').value = item.category;
+      document.getElementById('resBadge').value = item.badge;
+      document.getElementById('resDesc').value = getLocalizedField(item.desc);
+      document.getElementById('resContent').value = getLocalizedField(item.content);
+      document.getElementById('cancelEditResBtn').classList.remove('hidden');
+      document.getElementById('resourceFormHeading').textContent = "Mahsulotni Tahrirlash";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelEditResource() {
+      document.getElementById('editingResourceId').value = '';
+      document.getElementById('addResourceForm').reset();
+      document.getElementById('cancelEditResBtn').classList.add('hidden');
+      document.getElementById('resourceFormHeading').textContent = i18n[currentLang].addProductTitle;
+    }
+
+    function deleteAdminResource(id) {
+      appData.resources = appData.resources.filter(r => r.id !== id);
       saveData();
-      e.target.reset();
-      alert("Yangi mahsulot katalogga qo'shildi!");
+      renderAdminResourcesList();
+    }
+
+    document.getElementById('addResourceForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const saveBtn = document.getElementById('saveProductBtn');
+      const origText = saveBtn.textContent;
+      saveBtn.textContent = '...';
+      saveBtn.disabled = true;
+
+      const editId = document.getElementById('editingResourceId').value;
+      const title = document.getElementById('resTitle').value.trim();
+      const desc = document.getElementById('resDesc').value.trim();
+      const content = document.getElementById('resContent').value.trim();
+      const translated = await buildMultilangItem(title, desc, content);
+
+      if (editId) {
+        const idx = appData.resources.findIndex(r => r.id === editId);
+        if (idx !== -1) {
+          appData.resources[idx] = {
+            ...appData.resources[idx],
+            category: document.getElementById('resCategory').value,
+            badge: document.getElementById('resBadge').value.trim().toUpperCase(),
+            title: translated.title,
+            desc: translated.desc,
+            content: translated.content
+          };
+        }
+        cancelEditResource();
+      } else {
+        appData.resources.unshift({
+          id: 'r' + Date.now(),
+          category: document.getElementById('resCategory').value,
+          badge: document.getElementById('resBadge').value.trim().toUpperCase(),
+          title: translated.title,
+          desc: translated.desc,
+          content: translated.content
+        });
+        e.target.reset();
+      }
+
+      saveData();
+      renderAdminResourcesList();
+      document.getElementById('translationPreviewBox').classList.add('hidden');
+      saveBtn.textContent = origText;
+      saveBtn.disabled = false;
+      alert("UZ / RU / EN Saqlandi!");
     });
 
     function savePortalSettings() {
       appData.settings.telegramUrl = document.getElementById('settingTelegram').value.trim() || 'https://t.me/admin';
       appData.settings.logoUrl = document.getElementById('settingLogoUrl').value.trim() || DEFAULT_LOGO;
+      appData.settings.price1m = document.getElementById('settingPrice1m').value.trim() || "50 000 so'm";
+      appData.settings.price3m = document.getElementById('settingPrice3m').value.trim() || "120 000 so'm";
+      appData.settings.cardNum = document.getElementById('settingCardNum').value.trim() || "8600 0000 0000 0000";
+      appData.settings.cardHolder = document.getElementById('settingCardHolder').value.trim() || "RED VAULT ADMIN";
+      appData.settings.googleFormUrl = document.getElementById('settingGoogleFormUrl').value.trim();
+      appData.settings.entryTg = document.getElementById('settingEntryTg').value.trim();
+      appData.settings.entryTariff = document.getElementById('settingEntryTariff').value.trim();
+      appData.settings.entryNote = document.getElementById('settingEntryNote').value.trim();
       saveData();
-      alert("Sozlamalar saqlandi!");
+      alert("Sozlamalar va Google Sheets havolasi saqlandi!");
     }
 
-    // A'ZO KATALOGI VA AI GENERATORLAR
+    function toggleFavorite(resId) {
+      if (!currentMemberUser) return;
+      if (!currentMemberUser.favorites) currentMemberUser.favorites = [];
+      const idx = currentMemberUser.favorites.indexOf(resId);
+      if (idx === -1) {
+        currentMemberUser.favorites.push(resId);
+      } else {
+        currentMemberUser.favorites.splice(idx, 1);
+      }
+      saveData();
+      renderResourcesGrid();
+    }
+
     function filterMemberCategory(cat) {
       currentCategory = cat;
       document.querySelectorAll('.cat-btn').forEach(btn => {
-        if (btn.textContent === cat) {
-          btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-red-600 text-white';
-        } else {
-          btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800';
-        }
+        const isSel = btn.getAttribute('data-cat') === cat;
+        btn.className = isSel
+          ? 'cat-btn px-4 py-2 rounded-xl text-xs font-bold bg-red-600 text-white'
+          : 'cat-btn px-4 py-2 rounded-xl text-xs font-semibold bg-[#0d0d11] text-neutral-400 border border-neutral-800';
       });
       renderResourcesGrid();
     }
 
     function renderResourcesGrid() {
       const grid = document.getElementById('resourcesGrid');
-      const items = currentCategory === 'Barchasi'
-        ? appData.resources
-        : appData.resources.filter(r => r.category === currentCategory);
+      const t = i18n[currentLang];
+      const query = (document.getElementById('memberSearchInput')?.value || '').toLowerCase().trim();
+      const favs = currentMemberUser?.favorites || [];
 
-      grid.innerHTML = items.map(item => `
-        <div class="bg-[#0d0d11] border border-neutral-800 hover:border-red-800/70 rounded-2xl p-5 flex flex-col justify-between transition">
-          <div>
-            <div class="flex items-center justify-between gap-2 mb-3">
-              <span class="text-[11px] font-mono px-2.5 py-0.5 rounded bg-red-950/80 text-red-400 border border-red-900/60">${item.badge}</span>
-              <span class="text-[11px] text-emerald-400 font-bold">TEKIN</span>
+      let items = appData.resources;
+      if (currentCategory === 'Sevimlilar') {
+        items = items.filter(r => favs.includes(r.id));
+      } else if (currentCategory !== 'Barchasi') {
+        items = items.filter(r => r.category === currentCategory);
+      }
+
+      if (query) {
+        items = items.filter(r =>
+          getLocalizedField(r.title).toLowerCase().includes(query) ||
+          getLocalizedField(r.desc).toLowerCase().includes(query) ||
+          r.badge.toLowerCase().includes(query)
+        );
+      }
+
+      grid.innerHTML = items.map(item => {
+        const isFav = favs.includes(item.id);
+        return `
+          <div class="bg-[#0d0d11] border border-neutral-800 hover:border-red-800/70 rounded-2xl p-5 flex flex-col justify-between transition">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="text-[11px] font-mono px-2.5 py-0.5 rounded bg-red-950/80 text-red-400 border border-red-900/60">${item.badge}</span>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] text-emerald-400 font-bold">${t.freeBadge}</span>
+                  <button onclick="toggleFavorite('${item.id}')" class="text-base leading-none ${isFav ? 'text-amber-400' : 'text-neutral-600 hover:text-amber-300'}" title="Sevimlilarga qo'shish">★</button>
+                </div>
+              </div>
+              <h4 class="text-base font-bold text-white mb-1.5">${getLocalizedField(item.title)}</h4>
+              <p class="text-xs text-neutral-400 leading-relaxed mb-4">${getLocalizedField(item.desc)}</p>
             </div>
-            <h4 class="text-base font-bold text-white mb-1.5">${item.title}</h4>
-            <p class="text-xs text-neutral-400 leading-relaxed mb-4">${item.desc}</p>
+            <button onclick="openResourceModal('${item.id}')" class="w-full py-2.5 rounded-xl bg-neutral-900 hover:bg-red-600 text-xs font-bold text-white transition">
+              ${t.openDownloadBtn}
+            </button>
           </div>
-          <button onclick="openResourceModal('${item.id}')" class="w-full py-2.5 rounded-xl bg-neutral-900 hover:bg-red-600 text-xs font-bold text-white transition">
-            Ochish & Yuklab Olish
-          </button>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function openResourceModal(id) {
       const item = appData.resources.find(r => r.id === id);
       if (!item) return;
-      document.getElementById('modalTitle').textContent = item.title;
-      document.getElementById('modalDesc').textContent = item.desc;
-      document.getElementById('modalContent').textContent = item.content;
+      document.getElementById('modalTitle').textContent = getLocalizedField(item.title);
+      document.getElementById('modalDesc').textContent = getLocalizedField(item.desc);
+      document.getElementById('modalContent').textContent = getLocalizedField(item.content);
       document.getElementById('resourceModal').classList.remove('hidden');
     }
 
@@ -599,9 +1366,8 @@
     }
 
     function copyModalContent() {
-      const txt = document.getElementById('modalContent').textContent;
-      navigator.clipboard.writeText(txt);
-      alert("Nusxa olindi!");
+      navigator.clipboard.writeText(document.getElementById('modalContent').textContent);
+      alert("Copied!");
     }
 
     function generateAiCode() {
@@ -610,14 +1376,15 @@
       const box = document.getElementById('codeOutputBox');
 
       if (custom) {
-        box.textContent = `// So'rov: ${custom}\nfunction startApp() {\n  console.log("${custom} ishga tushdi!");\n  return { status: "OK", vip: true };\n}\nstartApp();`;
+        box.textContent = `// Vazifa: ${custom}\nfunction executeCustomApp() {\n  console.log("${custom} — muvaffaqiyatli ishga tushdi!");\n  return { task: "${custom}", status: "ACTIVE" };\n}\nexecuteCustomApp();`;
         return;
       }
 
       const snippets = {
-        bot: `from aiogram import Bot, Dispatcher, types\nimport asyncio\n\nbot = Bot(token="BOT_TOKEN")\ndp = Dispatcher()\n\n@dp.message()\nasync def echo(msg: types.Message):\n    await msg.answer("RED VAULT VIP Bot faol!")\n\nasyncio.run(dp.start_polling(bot))`,
+        bot: `from aiogram import Bot, Dispatcher, types\nimport asyncio\n\nbot = Bot(token="BOT_TOKEN")\ndp = Dispatcher()\n\n@dp.message()\nasync def echo(msg: types.Message):\n    await msg.answer("RED VAULT VIP Bot!")\n\nasyncio.run(dp.start_polling(bot))`,
         login: `<div class="bg-black border border-red-600 p-6 rounded-2xl text-white">\n  <h2 class="text-red-500 font-bold">VIP LOGIN</h2>\n  <input placeholder="ID" class="bg-neutral-900 p-2 rounded w-full mt-2"/>\n</div>`,
-        calc: `function hisobla(summa, foiz) {\n  const foyda = summa * (foiz / 100);\n  return summa + foyda;\n}\nconsole.log("Jami:", hisobla(1000000, 15));`
+        calc: `function calculate(amount, rate) {\n  return amount + (amount * (rate / 100));\n}\nconsole.log(calculate(1000, 15));`,
+        timer: `let sec = 60;\nconst t = setInterval(() => {\n  console.log("Qoldi:", --sec);\n  if (sec <= 0) clearInterval(t);\n}, 1000);`
       };
       box.textContent = snippets[preset];
     }
@@ -625,32 +1392,73 @@
     function generateAiLogo() {
       const brand = document.getElementById('logoBrandInput').value.trim() || 'RED VAULT';
       const style = document.getElementById('logoStyleSelect').value;
+      const customPrompt = document.getElementById('logoCustomPrompt').value.trim();
+      logoSeedCounter++;
+
       const shapes = {
-        shield: `<path d="M24 4L6 12v12c0 11 7.7 21.3 18 24 10.3-2.7 18-13 18-24V12L24 4z" fill="#dc2626"/>`,
-        crown: `<path d="M6 34h36l-3-18-9 7-6-13-6 13-9-7-3 18z" fill="#dc2626"/>`,
-        bolt: `<path d="M27 4L10 26h13l-2 18 17-22H25l2-18z" fill="#dc2626"/>`
+        shield: `<path d="M32 6L10 16v15c0 14 9.6 26.6 22 30 12.4-3.4 22-16 22-30V16L32 6z" fill="url(#redGrad)"/>`,
+        crown: `<path d="M8 44h48l-4-24-12 10-8-18-8 18-12-10-4 24z" fill="url(#redGrad)"/>`,
+        bolt: `<path d="M36 6L14 34h17l-3 24 22-28H33l3-24z" fill="url(#redGrad)"/>`,
+        diamond: `<polygon points="32,6 56,24 32,58 8,24" fill="url(#redGrad)"/>`,
+        eye: `<path d="M6 32c6-12 16-18 26-18s20 6 26 18c-6 12-16 18-26 18S12 44 6 32z" fill="none" stroke="#ef4444" stroke-width="4"/><circle cx="32" cy="32" r="9" fill="url(#redGrad)"/>`,
+        flame: `<path d="M34 6c2 10-6 14-6 22 0 4 3 7 7 7 5 0 8-5 6-12 7 5 11 13 9 22-2 9-10 14-19 14-11 0-19-8-18-19 1-11 10-21 21-34z" fill="url(#redGrad)"/>`,
+        star: `<polygon points="32,6 39,23 58,24 43,36 48,54 32,44 16,54 21,36 6,24 25,23" fill="url(#redGrad)"/>`,
+        hex: `<polygon points="32,6 54,19 54,45 32,58 10,45 10,19" fill="none" stroke="#ef4444" stroke-width="4"/><polygon points="32,15 46,23 46,41 32,49 18,41 18,23" fill="url(#redGrad)"/>`,
+        sword: `<path d="M46 8l10 10-26 26-6 2 2-6L46 8z" fill="url(#redGrad)"/>`
       };
+
+      let svgInner = '';
+      if (style === 'custom' || customPrompt) {
+        const seedText = (customPrompt || brand) + '_' + logoSeedCounter;
+        let hash = 0;
+        for (let i = 0; i < seedText.length; i++) hash = seedText.charCodeAt(i) + ((hash << 5) - hash);
+        const sides = 3 + (Math.abs(hash) % 5);
+        const rot = Math.abs(hash * 13) % 360;
+        let pts = [];
+        for (let s = 0; s < sides; s++) {
+          const ang = ((s * 360) / sides + rot) * (Math.PI / 180);
+          pts.push(`${(32 + 22 * Math.cos(ang)).toFixed(1)},${(32 + 22 * Math.sin(ang)).toFixed(1)}`);
+        }
+        const initials = brand.slice(0, 2).toUpperCase();
+        svgInner = `
+          <polygon points="${pts.join(' ')}" fill="none" stroke="#ef4444" stroke-width="3.5" />
+          <circle cx="32" cy="32" r="14" fill="url(#redGrad)" opacity="0.85" />
+          <text x="32" y="37" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-weight="800" font-size="14">${initials}</text>
+        `;
+      } else {
+        svgInner = shapes[style] || shapes.shield;
+      }
+
       document.getElementById('logoPreviewContainer').innerHTML = `
-        <svg id="generatedSvgEl" width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-          <rect width="48" height="48" rx="12" fill="#141419" stroke="#7f1d1d" stroke-width="2"/>
-          ${shapes[style]}
+        <svg id="generatedSvgEl" width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ef4444"/><stop offset="100%" stop-color="#991b1b"/>
+            </linearGradient>
+          </defs>
+          <rect width="64" height="64" rx="16" fill="#121217" stroke="#7f1d1d" stroke-width="2"/>
+          ${svgInner}
         </svg>
-        <span class="font-extrabold text-sm tracking-wider text-white">${brand}</span>
+        <div>
+          <div class="font-extrabold text-base tracking-wider text-white">${brand}</div>
+          <div class="text-[11px] font-mono text-red-400">${customPrompt ? customPrompt.slice(0, 26) : 'VECTOR SVG // VIP'}</div>
+        </div>
       `;
     }
 
     function downloadGeneratedSvg() {
       const svgEl = document.getElementById('generatedSvgEl');
       if (!svgEl) return;
+      const brandSlug = (document.getElementById('logoBrandInput').value.trim() || 'red-vault').toLowerCase().replace(/\s+/g, '-');
       const blob = new Blob([svgEl.outerHTML], { type: 'image/svg+xml' });
-      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
-      a.download = 'red-vault-logo.svg';
+      a.href = URL.createObjectURL(blob);
+      a.download = `${brandSlug}-logo.svg`;
       a.click();
     }
 
     applyLogosAndLinks();
+    setLanguage(currentLang);
   </script>
 </body>
 </html>
